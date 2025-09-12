@@ -1,3 +1,46 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "candidate-1",
+      "description": "Profile picture for candidate Alice Johnson",
+      "imageUrl": "https://picsum.photos/seed/1/200/200",
+      "imageHint": "woman portrait"
+    },
+    {
+      "id": "candidate-2",
+      "description": "Profile picture for candidate Bob Williams",
+      "imageUrl": "https://picsum.photos/seed/2/200/200",
+      "imageHint": "man portrait"
+    },
+    {
+      "id": "candidate-3",
+      "description": "Profile picture for candidate Carol Davis",
+      "imageUrl": "https://picsum.photos/seed/3/200/200",
+      "imageHint": "woman smiling"
+    },
+    {
+      "id": "candidate-4",
+      "description": "Profile picture for candidate David Garcia",
+      "imageUrl": "https://picsum.photos/seed/4/200/200",
+      "imageHint": "man glasses"
+    },
+    {
+      "id": "election-banner-1",
+      "description": "Banner for Presidential Election 2024",
+      "imageUrl": "https://picsum.photos/seed/101/1200/400",
+      "imageHint": "government building"
+    },
+    {
+      "id": "election-banner-2",
+      "description": "Banner for Parliamentary Elections",
+      "imageUrl": "https://picsum.photos/seed/102/1200/400",
+      "imageHint": "crowd people"
+    },
+    {
+      "id": "election-banner-3",
+      "description": "Banner for Local Government Elections",
+      "imageUrl": "https://picsum.photos/seed/103/1200/400",
+      "imageHint": "city hall"
+    }
+  ]
 }
