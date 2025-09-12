@@ -14,6 +14,8 @@ import { MOCK_USERS } from './mock-users';
 
 const VerifyUserInputSchema = z.object({
   nationalId: z.string().describe("The user's National ID."),
+  firstName: z.string().describe("The user's first name."),
+  lastName: z.string().describe("The user's last name."),
 });
 export type VerifyUserInput = z.infer<typeof VerifyUserInputSchema>;
 
@@ -37,7 +39,7 @@ const verifyUserFlow = ai.defineFlow(
     outputSchema: VerifyUserOutputSchema,
   },
   async (input) => {
-    const user = MOCK_USERS.find(u => u.nationalId === input.nationalId);
+    const user = MOCK_USERS.find(u => u.nationalId === input.nationalId && u.firstName === input.firstName && u.lastName === input.lastName);
 
     if (user) {
       return {

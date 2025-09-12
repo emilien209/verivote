@@ -16,27 +16,41 @@ import { useState, useTransition } from 'react';
 import { checkUserRecognition } from './actions';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Loader2 } from 'lucide-react';
+import { verifyAdmin } from '@/ai/flows/admin-verification';
 
 export default function LoginPage() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [isAdminLogin, setIsAdminLogin] = useState(false);
 
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
     const formData = new FormData(e.currentTarget);
-    const nationalId = formData.get('national-id') as string;
+    const password = formData.get('password') as string;
+
 
     startTransition(async () => {
-      const result = await checkUserRecognition(nationalId);
-      if (result.success && result.data?.isRecognized) {
-        router.push('/dashboard');
-      } else if (result.success && !result.data?.isRecognized) {
-        setError('This National ID is not recognized. Please register or double-check the ID.');
-      }
-      else {
-        setError(result.error || 'An unknown error occurred during verification.');
+      if(isAdminLogin) {
+        const email = formData.get('email') as string;
+        const result = await verifyAdmin({ email, password });
+        if (result.isAuthenticated) {
+          router.push('/admin');
+        } else {
+          setError('Invalid admin credentials.');
+        }
+      } else {
+        const nationalId = formData.get('national-id') as string;
+        const result = await checkUserRecognition(nationalId);
+        if (result.success && result.data?.isRecognized) {
+          router.push('/dashboard');
+        } else if (result.success && !result.data?.isRecognized) {
+          setError('This National ID is not recognized. Please contact an administrator to register.');
+        }
+        else {
+          setError(result.error || 'An unknown error occurred during verification.');
+        }
       }
     });
   };
@@ -44,9 +58,9 @@ export default function LoginPage() {
   return (
     <Card className="mx-auto w-full max-w-sm">
       <CardHeader>
-        <CardTitle className="text-2xl">Login</CardTitle>
+        <CardTitle className="text-2xl">{isAdminLogin ? 'Admin Login' : 'Voter Login'}</CardTitle>
         <CardDescription>
-          Enter your National ID to login to your account
+          {isAdminLogin ? 'Enter your admin credentials' : 'Enter your National ID to login to your account'}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -57,28 +71,42 @@ export default function LoginPage() {
             </Alert>
         )}
         <form onSubmit={handleLogin} className="grid gap-4">
-          <div className="grid gap-2">
-            <Label htmlFor="national-id">National ID</Label>
-            <Input
-              id="national-id"
-              name="national-id"
-              type="text"
-              placeholder="1234567890123456"
-              required
-              disabled={isPending}
-            />
-          </div>
+          {isAdminLogin ? (
+            <div className="grid gap-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="admin@example.com"
+                required
+                disabled={isPending}
+              />
+            </div>
+          ) : (
+            <div className="grid gap-2">
+              <Label htmlFor="national-id">National ID</Label>
+              <Input
+                id="national-id"
+                name="national-id"
+                type="text"
+                placeholder="1234567890123456"
+                required
+                disabled={isPending}
+              />
+            </div>
+          )}
           <div className="grid gap-2">
             <div className="flex items-center">
               <Label htmlFor="password">Password</Label>
-              <Link
+              {!isAdminLogin && <Link
                 href="#"
                 className="ml-auto inline-block text-sm underline"
               >
                 Forgot your password?
-              </Link>
+              </Link>}
             </div>
-            <Input id="password" type="password" required disabled={isPending} />
+            <Input id="password" name="password" type="password" required disabled={isPending} />
           </div>
           <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={isPending}>
             {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -86,10 +114,9 @@ export default function LoginPage() {
           </Button>
         </form>
         <div className="mt-4 text-center text-sm">
-          Don&apos;t have an account?{' '}
-          <Link href="/register" className="underline">
-            Register
-          </Link>
+          <Button variant="link" onClick={() => setIsAdminLogin(!isAdminLogin)}>
+            {isAdminLogin ? 'Login as Voter' : 'Login as Admin'}
+          </Button>
         </div>
       </CardContent>
     </Card>
