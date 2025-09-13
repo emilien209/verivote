@@ -22,7 +22,6 @@ export async function addOfficial(official: Omit<MockOfficial, 'id'>): Promise<{
   }
   const newId = `off${Date.now()}`;
   MOCK_OFFICIALS.push({ ...official, id: newId });
-  console.log('Added official:', MOCK_OFFICIALS);
   return { success: true };
 }
 
@@ -32,6 +31,5 @@ export async function removeOfficial(officialId: string): Promise<{ success: boo
     return { success: false, error: 'Official not found.' };
   }
   MOCK_OFFICIALS.splice(index, 1);
-  console.log('Removed official. Remaining:', MOCK_OFFICIALS);
   return { success: true };
 }
