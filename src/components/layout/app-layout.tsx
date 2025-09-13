@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/sidebar';
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
-import { LogOut, LayoutDashboard, Users, BookOpen, MessageSquare, Shield, UserPlus, UserRoundPlus, UserCog, HowToVote } from 'lucide-react';
+import { LogOut, LayoutDashboard, Users, BookOpen, MessageSquare, Shield, UserRoundPlus, UserCog, Vote } from 'lucide-react';
 import { Header } from './header';
 import { useState, useEffect } from 'react';
 
@@ -25,10 +25,9 @@ const allNavLinks = [
     { href: '/guide', label: 'AI Guide', icon: <BookOpen size={20} />, role: 'voter' },
     { href: '/faq', label: 'FAQ Chatbot', icon: <MessageSquare size={20} />, role: 'voter' },
     { href: '/admin', label: 'Admin', icon: <Shield size={20} />, role: 'admin' },
-    { href: '/admin/register-voter', label: 'Register Voter', icon: <UserPlus size={20} />, role: 'admin' },
     { href: '/admin/register-candidate', label: 'Register Candidate', icon: <UserRoundPlus size={20} />, role: 'admin' },
     { href: '/admin/manage-officials', label: 'Manage Officials', icon: <UserCog size={20} />, role: 'admin' },
-    { href: '/official/cast-vote', label: 'Cast Vote', icon: <HowToVote size={20} />, role: 'official' },
+    { href: '/official/cast-vote', label: 'Cast Vote', icon: <Vote size={20} />, role: 'official' },
     { href: '/candidates', label: 'Candidates', icon: <Users size={20} />, role: 'official' },
 ];
 
