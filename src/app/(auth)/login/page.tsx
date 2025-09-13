@@ -44,7 +44,7 @@ export default function LoginPage() {
         localStorage.setItem('userRole', 'official');
         router.push('/official/cast-vote');
       } else {
-        setError('Invalid credentials. Please check your email and password.');
+        setError('You are not authorized to access this service. Please contact an administrator.');
       }
     });
   };
