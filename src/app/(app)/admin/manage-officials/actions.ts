@@ -6,7 +6,7 @@ import type { MockOfficial } from '@/ai/flows/mock-officials';
 
 export async function handleAddOfficial(official: Omit<MockOfficial, 'id'>) {
   try {
-    const result = await addOfficial(official);
+    const result = await addOfficial(official as MockOfficial); // Pass the full official object
     if (result.success) {
       revalidatePath('/admin/manage-officials');
       return { success: true };

@@ -11,7 +11,37 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import { MOCK_OFFICIALS, type MockOfficial } from './mock-officials';
+import { MOCK_OFFICIALS as initialMockOfficials, type MockOfficial } from './mock-officials';
+import fs from 'fs';
+import path from 'path';
+
+// Use a simple JSON file as a database for this mock data.
+const dbPath = path.resolve(process.cwd(), 'src/ai/flows/mock-officials.json');
+
+function readOfficials(): MockOfficial[] {
+  try {
+    if (fs.existsSync(dbPath)) {
+      const data = fs.readFileSync(dbPath, 'utf-8');
+      return JSON.parse(data);
+    }
+    // If the file doesn't exist, start with the initial data and create the file.
+    fs.writeFileSync(dbPath, JSON.stringify(initialMockOfficials, null, 2));
+    return initialMockOfficials;
+  } catch (error) {
+    console.error("Error reading or creating officials file:", error);
+    // Fallback to initial data if there's an error
+    return initialMockOfficials;
+  }
+}
+
+function writeOfficials(officials: MockOfficial[]): void {
+  try {
+    fs.writeFileSync(dbPath, JSON.stringify(officials, null, 2));
+  } catch (error) {
+    console.error("Error writing officials file:", error);
+  }
+}
+
 
 // --- Verification Flow ---
 
@@ -37,7 +67,8 @@ const verifyOfficialFlow = ai.defineFlow(
     outputSchema: VerifyOfficialOutputSchema,
   },
   async (input) => {
-    const official = MOCK_OFFICIALS.find(o => o.email === input.email && o.password === input.password);
+    const officials = readOfficials();
+    const official = officials.find(o => o.email === input.email && o.password === input.password);
 
     if (official) {
       return {
@@ -55,24 +86,31 @@ const verifyOfficialFlow = ai.defineFlow(
 // --- Management Functions ---
 
 export async function getOfficials(): Promise<Omit<MockOfficial, 'password'>[]> {
+  const officials = readOfficials();
   // Return a copy of the officials array, omitting the password.
-  return MOCK_OFFICIALS.map(({ password, ...rest }) => rest);
+  return officials.map(({ password, ...rest }) => rest);
 }
 
-export async function addOfficial(official: Omit<MockOfficial, 'id'>): Promise<{ success: boolean; error?: string }> {
-  if (MOCK_OFFICIALS.some(o => o.email === official.email)) {
+export async function addOfficial(official: MockOfficial): Promise<{ success: boolean; error?: string }> {
+  const officials = readOfficials();
+  if (officials.some(o => o.email === official.email)) {
     return { success: false, error: 'An official with this email already exists.' };
   }
   const newId = `off${Date.now()}`;
-  MOCK_OFFICIALS.push({ ...official, id: newId });
+  officials.push({ ...official, id: newId });
+  writeOfficials(officials);
   return { success: true };
 }
 
 export async function removeOfficial(officialId: string): Promise<{ success: boolean; error?: string }> {
-  const index = MOCK_OFFICIALS.findIndex(o => o.id === officialId);
-  if (index === -1) {
+  let officials = readOfficials();
+  const initialLength = officials.length;
+  officials = officials.filter(o => o.id !== officialId);
+  
+  if (officials.length === initialLength) {
     return { success: false, error: 'Official not found.' };
   }
-  MOCK_OFFICIALS.splice(index, 1);
+  
+  writeOfficials(officials);
   return { success: true };
 }
