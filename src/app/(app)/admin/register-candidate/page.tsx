@@ -15,6 +15,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useState, useTransition } from 'react';
 import { Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { addCandidate } from './actions';
 
 
 export default function RegisterCandidatePage() {
@@ -30,15 +31,23 @@ export default function RegisterCandidatePage() {
     const platform = formData.get('platform') as string;
 
     startTransition(async () => {
-      // In a real app, you would save this to a database.
-      console.log({ name, party, platform });
-      
-      toast({
-        title: "Candidate Registered Successfully",
-        description: `${name} (${party}) has been added to the candidate list.`,
-      });
-      // Reset form
-      (e.target as HTMLFormElement).reset();
+      const result = await addCandidate({ name, party, platform });
+
+      if (result.success) {
+        toast({
+          title: "Candidate Registered Successfully",
+          description: `${name} (${party}) has been added to the candidate list.`,
+        });
+        // Reset form
+        (e.target as HTMLFormElement).reset();
+        router.push('/candidates');
+      } else {
+        toast({
+          title: "Registration Failed",
+          description: result.error,
+          variant: "destructive",
+        });
+      }
     });
   };
 
