@@ -14,23 +14,49 @@ import {
 } from '@/components/ui/sidebar';
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
-import { LogOut } from 'lucide-react';
+import { LogOut, LayoutDashboard, Users, BookOpen, MessageSquare, Shield, UserPlus, UserRoundPlus } from 'lucide-react';
 import { Header } from './header';
+import { useState, useEffect } from 'react';
 
-type NavLink = {
-  href: string;
-  label: string;
-  icon: React.ReactNode;
-};
+
+const allNavLinks = [
+    { href: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} />, role: 'voter' },
+    { href: '/candidates', label: 'Candidates', icon: <Users size={20} />, role: 'voter' },
+    { href: '/guide', label: 'AI Guide', icon: <BookOpen size={20} />, role: 'voter' },
+    { href: '/faq', label: 'FAQ Chatbot', icon: <MessageSquare size={20} />, role: 'voter' },
+    { href: '/admin', label: 'Admin', icon: <Shield size={20} />, role: 'admin' },
+    { href: '/admin/register-voter', label: 'Register Voter', icon: <UserPlus size={20} />, role: 'admin' },
+    { href: '/admin/register-candidate', label: 'Register Candidate', icon: <UserRoundPlus size={20} />, role: 'admin' },
+];
 
 export function AppLayout({
   children,
-  navLinks,
 }: {
   children: React.ReactNode;
-  navLinks: NavLink[];
 }) {
   const pathname = usePathname();
+  const [navLinks, setNavLinks] = useState(allNavLinks.filter(l => l.role === 'voter'));
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const isAdminPath = pathname.startsWith('/admin');
+      const role = isAdminPath ? 'admin' : 'voter';
+      if (role === 'admin') {
+        setNavLinks(allNavLinks.filter(link => link.role === 'admin' || link.href === '/admin'));
+      } else {
+        setNavLinks(allNavLinks.filter(link => link.role === 'voter'));
+      }
+    }
+  }, [pathname]);
+
+  if (!isClient) {
+    return null;
+  }
 
   return (
     <SidebarProvider>
