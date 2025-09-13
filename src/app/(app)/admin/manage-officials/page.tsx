@@ -5,7 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { getOfficials } from '@/ai/flows/manage-officials';
+import { getOfficials } from '@/ai/flows/official-verification';
 import { OfficialsList } from './officials-list';
 import { AddOfficialForm } from './add-official-form';
 

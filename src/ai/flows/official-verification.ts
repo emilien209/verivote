@@ -1,16 +1,19 @@
 'use server';
 
 /**
- * @fileOverview An official verification AI agent.
+ * @fileOverview Manages and verifies election officials.
  *
- * - verifyOfficial - A function that handles the official verification process.
- * - VerifyOfficialInput - The input type for the verifyOfficial function.
- * - VerifyOfficialOutput - The return type for the verifyOfficial function.
+ * - verifyOfficial: Authenticates an official's credentials.
+ * - getOfficials: Returns a list of all officials.
+ * - addOfficial: Adds a new official.
+ * - removeOfficial: Removes an official.
  */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import { MOCK_OFFICIALS } from './mock-officials';
+import { MOCK_OFFICIALS, type MockOfficial } from './mock-officials';
+
+// --- Verification Flow ---
 
 const VerifyOfficialInputSchema = z.object({
   email: z.string().email().describe("The official's email."),
@@ -47,3 +50,29 @@ const verifyOfficialFlow = ai.defineFlow(
     };
   }
 );
+
+
+// --- Management Functions ---
+
+export async function getOfficials(): Promise<Omit<MockOfficial, 'password'>[]> {
+  // Return a copy of the officials array, omitting the password.
+  return MOCK_OFFICIALS.map(({ password, ...rest }) => rest);
+}
+
+export async function addOfficial(official: Omit<MockOfficial, 'id'>): Promise<{ success: boolean; error?: string }> {
+  if (MOCK_OFFICIALS.some(o => o.email === official.email)) {
+    return { success: false, error: 'An official with this email already exists.' };
+  }
+  const newId = `off${Date.now()}`;
+  MOCK_OFFICIALS.push({ ...official, id: newId });
+  return { success: true };
+}
+
+export async function removeOfficial(officialId: string): Promise<{ success: boolean; error?: string }> {
+  const index = MOCK_OFFICIALS.findIndex(o => o.id === officialId);
+  if (index === -1) {
+    return { success: false, error: 'Official not found.' };
+  }
+  MOCK_OFFICIALS.splice(index, 1);
+  return { success: true };
+}

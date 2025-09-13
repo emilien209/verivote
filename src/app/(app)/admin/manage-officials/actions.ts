@@ -1,6 +1,6 @@
 'use server';
 
-import { addOfficial, removeOfficial as removeOfficialFromDb } from '@/ai/flows/manage-officials';
+import { addOfficial, removeOfficial as removeOfficialFromDb } from '@/ai/flows/official-verification';
 import { revalidatePath } from 'next/cache';
 import type { MockOfficial } from '@/ai/flows/mock-officials';
 
