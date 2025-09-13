@@ -27,11 +27,11 @@ export async function addOfficial(official: Omit<MockOfficial, 'id'>): Promise<{
 }
 
 export async function removeOfficial(officialId: string): Promise<{ success: boolean; error?: string }> {
-  const initialLength = MOCK_OFFICIALS.length;
-  MOCK_OFFICIALS = MOCK_OFFICIALS.filter(o => o.id !== officialId);
-  if (MOCK_OFFICIALS.length === initialLength) {
+  const index = MOCK_OFFICIALS.findIndex(o => o.id === officialId);
+  if (index === -1) {
     return { success: false, error: 'Official not found.' };
   }
+  MOCK_OFFICIALS.splice(index, 1);
   console.log('Removed official. Remaining:', MOCK_OFFICIALS);
   return { success: true };
 }
