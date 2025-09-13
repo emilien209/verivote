@@ -16,3 +16,9 @@ export type Election = {
   status: 'Ongoing' | 'Upcoming' | 'Completed';
   candidates: Candidate[];
 };
+
+export type Official = {
+  id: string;
+  name: string;
+  email: string;
+};
