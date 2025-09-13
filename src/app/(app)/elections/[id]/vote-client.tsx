@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
@@ -12,7 +12,21 @@ import { CheckCircle } from 'lucide-react';
 
 export function VoteClient({ candidates }: { candidates: Candidate[] }) {
   const [selectedCandidate, setSelectedCandidate] = useState<string | null>(null);
+  const [voterName, setVoterName] = useState<string | null>(null);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const name = localStorage.getItem('voterName');
+    if (name) {
+      setVoterName(name);
+    } else {
+      toast({
+        title: 'Error',
+        description: 'Could not identify voter. Please log in again.',
+        variant: 'destructive',
+      });
+    }
+  }, [toast]);
 
   const handleVote = () => {
     if (!selectedCandidate) {
@@ -67,7 +81,7 @@ export function VoteClient({ candidates }: { candidates: Candidate[] }) {
       <div className="mt-8 flex justify-center">
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <Button size="lg" disabled={!selectedCandidate} className="bg-accent text-accent-foreground hover:bg-accent/90">
+            <Button size="lg" disabled={!selectedCandidate || !voterName} className="bg-accent text-accent-foreground hover:bg-accent/90">
               Cast Your Vote
             </Button>
           </AlertDialogTrigger>
@@ -75,7 +89,7 @@ export function VoteClient({ candidates }: { candidates: Candidate[] }) {
             <AlertDialogHeader>
               <AlertDialogTitle>Confirm Your Vote</AlertDialogTitle>
               <AlertDialogDescription>
-                You are about to cast your vote for{' '}
+                Hello, <span className="font-bold">{voterName}</span>. You are about to cast your vote for{' '}
                 <span className="font-bold">{candidateDetails?.name}</span> of the{' '}
                 <span className="font-bold">{candidateDetails?.party}</span>.
                 This action is final and cannot be undone. Are you sure you want to proceed?

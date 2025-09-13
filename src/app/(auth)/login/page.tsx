@@ -43,7 +43,8 @@ export default function LoginPage() {
       } else {
         const nationalId = formData.get('national-id') as string;
         const result = await checkUserRecognition(nationalId);
-        if (result.success && result.data?.isRecognized) {
+        if (result.success && result.data?.isRecognized && result.data.user) {
+          localStorage.setItem('voterName', `${result.data.user.firstName} ${result.data.user.lastName}`);
           router.push('/dashboard');
         } else if (result.success && !result.data?.isRecognized) {
           setError('This National ID is not recognized. Please contact an administrator to register.');
