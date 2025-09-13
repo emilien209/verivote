@@ -9,10 +9,12 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useToast } from '@/hooks/use-toast';
 import type { Candidate } from '@/lib/types';
 import { CheckCircle } from 'lucide-react';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
 export function VoteClient({ candidates }: { candidates: Candidate[] }) {
   const [selectedCandidate, setSelectedCandidate] = useState<string | null>(null);
   const [voterName, setVoterName] = useState<string | null>(null);
+  const [hasVoted, setHasVoted] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -25,6 +27,11 @@ export function VoteClient({ candidates }: { candidates: Candidate[] }) {
         description: 'Could not identify voter. Please log in again.',
         variant: 'destructive',
       });
+    }
+    // Check if the user has already voted in this session
+    const votedStatus = localStorage.getItem('hasVoted_presidential-2024');
+    if (votedStatus === 'true') {
+        setHasVoted(true);
     }
   }, [toast]);
 
@@ -40,6 +47,10 @@ export function VoteClient({ candidates }: { candidates: Candidate[] }) {
     // In a real app, this would involve encryption and a secure transaction
     console.log(`Voted for candidate: ${selectedCandidate}`);
 
+    // Mark that the user has voted for this specific election
+    localStorage.setItem('hasVoted_presidential-2024', 'true');
+    setHasVoted(true);
+
     toast({
         title: 'Vote Cast Successfully!',
         description: 'Your vote has been securely recorded. Thank you for participating.',
@@ -48,6 +59,18 @@ export function VoteClient({ candidates }: { candidates: Candidate[] }) {
   };
 
   const candidateDetails = candidates.find(c => c.id === selectedCandidate);
+
+  if (hasVoted) {
+    return (
+        <Alert variant="default" className="max-w-md mx-auto">
+            <CheckCircle className="h-4 w-4" />
+            <AlertTitle>Thank You for Voting!</AlertTitle>
+            <AlertDescription>
+                You have already cast your vote in this election. Each voter is allowed only one vote.
+            </AlertDescription>
+        </Alert>
+    );
+  }
 
   return (
     <div>
@@ -81,7 +104,7 @@ export function VoteClient({ candidates }: { candidates: Candidate[] }) {
       <div className="mt-8 flex justify-center">
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <Button size="lg" disabled={!selectedCandidate || !voterName} className="bg-accent text-accent-foreground hover:bg-accent/90">
+            <Button size="lg" disabled={!selectedCandidate || !voterName || hasVoted} className="bg-accent text-accent-foreground hover:bg-accent/90">
               Cast Your Vote
             </Button>
           </AlertDialogTrigger>
