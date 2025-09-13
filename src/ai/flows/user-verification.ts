@@ -1,7 +1,7 @@
 'use server';
 
 /**
- * @fileOverview A user verification AI agent.
+ * @fileOverview A user verification AI agent that checks against a mock NIDA database.
  *
  * - verifyUser - A function that handles the user verification process.
  * - VerifyUserInput - The input type for the verifyUser function.
@@ -14,13 +14,11 @@ import { MOCK_USERS } from './mock-users';
 
 const VerifyUserInputSchema = z.object({
   nationalId: z.string().describe("The user's National ID."),
-  firstName: z.string().describe("The user's first name."),
-  lastName: z.string().describe("The user's last name."),
 });
 export type VerifyUserInput = z.infer<typeof VerifyUserInputSchema>;
 
 const VerifyUserOutputSchema = z.object({
-  isRecognized: z.boolean().describe('Whether or not the user is recognized.'),
+  isRecognized: z.boolean().describe('Whether or not the user is recognized in the NIDA database.'),
   user: z.object({
     firstName: z.string(),
     lastName: z.string(),
@@ -39,7 +37,7 @@ const verifyUserFlow = ai.defineFlow(
     outputSchema: VerifyUserOutputSchema,
   },
   async (input) => {
-    const user = MOCK_USERS.find(u => u.nationalId === input.nationalId && u.firstName === input.firstName && u.lastName === input.lastName);
+    const user = MOCK_USERS.find(u => u.nationalId === input.nationalId);
 
     if (user) {
       return {

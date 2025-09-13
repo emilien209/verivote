@@ -11,9 +11,9 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Loader2, UserCheck, UserPlus } from 'lucide-react';
+import { Loader2, UserCheck, UserX } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { checkUserRecognition } from '@/app/(auth)/login/actions';
+import { verifyUser } from '@/ai/flows/user-verification';
 import { VoteClient } from '@/app/(app)/elections/[id]/vote-client';
 import type { Candidate } from '@/lib/types';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
@@ -31,7 +31,6 @@ enum VoterState {
   LOOKUP,
   NOT_FOUND,
   READY_TO_VOTE,
-  REGISTERING,
 }
 
 export default function OfficialCastVotePage() {
@@ -47,46 +46,29 @@ export default function OfficialCastVotePage() {
     setVoter(null);
     setVoterState(VoterState.LOOKUP);
     startTransition(async () => {
-      const result = await checkUserRecognition(nationalIdInput);
+      const hasVoted = localStorage.getItem(`hasVoted_${nationalIdInput}`);
+      if (hasVoted) {
+          setError('This voter has already cast their ballot for this election.');
+          setVoterState(VoterState.IDLE);
+          return;
+      }
+      
+      const result = await verifyUser({ nationalId: nationalIdInput });
 
-      if (result.success && result.data?.isRecognized && result.data.user) {
-        const hasVoted = localStorage.getItem(`hasVoted_${result.data.user.firstName}_${result.data.user.lastName}`);
-        if (hasVoted) {
-            setError('This voter has already cast their ballot for this election.');
-            setVoterState(VoterState.IDLE);
-            return;
-        }
-        setVoter({ name: `${result.data.user.firstName} ${result.data.user.lastName}`, nationalId: nationalIdInput });
+      if (result.isRecognized && result.user) {
+        setVoter({ name: `${result.user.firstName} ${result.user.lastName}`, nationalId: nationalIdInput });
         setVoterState(VoterState.READY_TO_VOTE);
       } else {
-        setError('Voter not found. You can register them now.');
+        setError('This National ID is not found in the NIDA database. The voter is not eligible to vote.');
         setVoterState(VoterState.NOT_FOUND);
       }
     });
   };
-
-  const handleRegisterVoter = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError(null);
-    const formData = new FormData(e.currentTarget);
-    const firstName = formData.get('first-name') as string;
-    const lastName = formData.get('last-name') as string;
-
-    startTransition(async () => {
-        // In a real app, you would have a flow to register the user.
-        // For this demo, we'll simulate it and proceed to voting.
-        toast({
-          title: "Voter Registered Successfully",
-          description: `${firstName} ${lastName} has been added to the voter roll.`,
-        });
-        setVoter({ name: `${firstName} ${lastName}`, nationalId: nationalIdInput });
-        setVoterState(VoterState.READY_TO_VOTE);
-    });
-  }
   
   const handleVoteCasted = () => {
     if(voter) {
-        localStorage.setItem(`hasVoted_${voter.name.split(' ')[0]}_${voter.name.split(' ')[1]}`, 'true');
+        // Record that this National ID has voted
+        localStorage.setItem(`hasVoted_${voter.nationalId}`, 'true');
     }
     // Reset the page to be ready for the next voter
     setVoter(null);
@@ -103,7 +85,7 @@ export default function OfficialCastVotePage() {
                     <div className="mb-8 text-center">
                         <h2 className="text-2xl font-bold tracking-tight">Presidential Election 2024</h2>
                         <p className="text-muted-foreground">
-                            Please assist <span className="font-bold">{voter?.name}</span> in casting their vote.
+                            Please assist <span className="font-bold">{voter?.name}</span> (ID: {voter?.nationalId}) in casting their vote.
                         </p>
                     </div>
                     <VoteClient candidates={MOCK_CANDIDATES} onVoteCasted={handleVoteCasted} voterName={voter?.name || ''} />
@@ -112,33 +94,15 @@ export default function OfficialCastVotePage() {
         case VoterState.NOT_FOUND:
              return (
                  <Card className="mx-auto w-full max-w-md">
-                    <CardHeader>
-                        <CardTitle>Register New Voter</CardTitle>
+                    <CardHeader className="items-center text-center">
+                        <UserX className="h-12 w-12 text-destructive" />
+                        <CardTitle>Voter Not Found</CardTitle>
                         <CardDescription>
-                        This National ID is not in the system. Please register the voter.
+                        {error}
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <form onSubmit={handleRegisterVoter} className="grid gap-4">
-                             <div className="grid gap-2">
-                                <Label htmlFor="national-id">National ID</Label>
-                                <Input id="national-id" name="national-id" value={nationalIdInput} disabled />
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="grid gap-2">
-                                <Label htmlFor="first-name">First name</Label>
-                                <Input id="first-name" name="first-name" placeholder="Max" required disabled={isPending} />
-                                </div>
-                                <div className="grid gap-2">
-                                <Label htmlFor="last-name">Last name</Label>
-                                <Input id="last-name" name="last-name" placeholder="Robinson" required disabled={isPending} />
-                                </div>
-                            </div>
-                            <Button type="submit" className="w-full" disabled={isPending}>
-                                {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <UserPlus className="mr-2 h-4 w-4" />}
-                                Register and Proceed to Vote
-                            </Button>
-                        </form>
+                        <Button onClick={() => setVoterState(VoterState.IDLE)} className="w-full">Try Another ID</Button>
                     </CardContent>
                 </Card>
             )
@@ -148,9 +112,9 @@ export default function OfficialCastVotePage() {
             return (
                 <Card className="mx-auto w-full max-w-md">
                 <CardHeader>
-                    <CardTitle>Voter Lookup</CardTitle>
+                    <CardTitle>Voter Verification</CardTitle>
                     <CardDescription>
-                    Enter the voter's National ID to begin the voting process.
+                    Enter the voter's National ID to check their eligibility and proceed with voting.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -175,7 +139,7 @@ export default function OfficialCastVotePage() {
                     </div>
                     <Button onClick={handleVoterLookup} className="w-full" disabled={isPending || !nationalIdInput}>
                         {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <UserCheck className="mr-2 h-4 w-4" />}
-                        Find Voter
+                        Verify Voter
                     </Button>
                     </div>
                 </CardContent>
@@ -188,9 +152,9 @@ export default function OfficialCastVotePage() {
   return (
     <div className="flex flex-col gap-8">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Register or Cast Vote</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Facilitate Voting</h1>
         <p className="text-muted-foreground">
-          Enter the voter's National ID to begin the process.
+          Verify a voter's eligibility using their National ID to help them cast their vote.
         </p>
       </div>
       {renderContent()}
