@@ -6,3 +6,5 @@ import '@/ai/flows/faq-chatbot.ts';
 import '@/ai/flows/ai-election-guide.ts';
 import '@/ai/flows/user-verification.ts';
 import '@/ai/flows/manage-officials.ts';
+import '@/ai/flows/admin-verification.ts';
+import '@/ai/flows/official-verification.ts';

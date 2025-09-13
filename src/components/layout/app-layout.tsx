@@ -28,6 +28,10 @@ const allNavLinks = [
     { href: '/admin/register-voter', label: 'Register Voter', icon: <UserPlus size={20} />, role: 'admin' },
     { href: '/admin/register-candidate', label: 'Register Candidate', icon: <UserRoundPlus size={20} />, role: 'admin' },
     { href: '/admin/manage-officials', label: 'Manage Officials', icon: <UserCog size={20} />, role: 'admin' },
+    // Officials might share some links with voters, or have their own.
+    // For now, let's assume they see the same as voters.
+    { href: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} />, role: 'official' },
+    { href: '/candidates', label: 'Candidates', icon: <Users size={20} />, role: 'official' },
 ];
 
 export function AppLayout({
@@ -45,13 +49,8 @@ export function AppLayout({
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const isAdminPath = pathname.startsWith('/admin');
-      const role = isAdminPath ? 'admin' : 'voter';
-      if (role === 'admin') {
-        setNavLinks(allNavLinks.filter(link => link.role === 'admin' || link.href === '/admin'));
-      } else {
-        setNavLinks(allNavLinks.filter(link => link.role === 'voter'));
-      }
+      const userRole = localStorage.getItem('userRole') || 'voter';
+      setNavLinks(allNavLinks.filter(link => link.role === userRole));
     }
   }, [pathname]);
 
@@ -68,8 +67,8 @@ export function AppLayout({
           </SidebarHeader>
           <SidebarContent>
             <SidebarMenu>
-              {navLinks.map((link) => (
-                <SidebarMenuItem key={link.href}>
+              {navLinks.map((link, index) => (
+                <SidebarMenuItem key={`${link.href}-${index}`}>
                   <Link href={link.href}>
                     <SidebarMenuButton
                       isActive={pathname === link.href}
