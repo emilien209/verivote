@@ -14,21 +14,18 @@ import {
 } from '@/components/ui/sidebar';
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
-import { LogOut, LayoutDashboard, Users, BookOpen, MessageSquare, Shield, UserRoundPlus, UserCog, Vote } from 'lucide-react';
+import { LogOut, Shield, UserRoundPlus, UserCog, Vote, Users } from 'lucide-react';
 import { Header } from './header';
 import { useState, useEffect } from 'react';
 
 
 const allNavLinks = [
-    { href: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} />, role: 'voter' },
-    { href: '/candidates', label: 'Candidates', icon: <Users size={20} />, role: 'voter' },
-    { href: '/guide', label: 'AI Guide', icon: <BookOpen size={20} />, role: 'voter' },
-    { href: '/faq', label: 'FAQ Chatbot', icon: <MessageSquare size={20} />, role: 'voter' },
-    { href: '/admin', label: 'Admin', icon: <Shield size={20} />, role: 'admin' },
+    { href: '/admin', label: 'Admin Dashboard', icon: <Shield size={20} />, role: 'admin' },
     { href: '/admin/register-candidate', label: 'Register Candidate', icon: <UserRoundPlus size={20} />, role: 'admin' },
     { href: '/admin/manage-officials', label: 'Manage Officials', icon: <UserCog size={20} />, role: 'admin' },
     { href: '/official/cast-vote', label: 'Cast Vote', icon: <Vote size={20} />, role: 'official' },
     { href: '/candidates', label: 'Candidates', icon: <Users size={20} />, role: 'official' },
+    { href: '/candidates', label: 'Candidates', icon: <Users size={20} />, role: 'admin' },
 ];
 
 export function AppLayout({
@@ -46,8 +43,17 @@ export function AppLayout({
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const userRole = localStorage.getItem('userRole') || 'voter';
-      setNavLinks(allNavLinks.filter(link => link.role === userRole));
+      const userRole = localStorage.getItem('userRole') || 'official';
+      const relevantLinks = allNavLinks.filter(link => link.role === userRole);
+      
+      // Remove duplicate links (e.g. Candidates for admin/official)
+      const uniqueLinks = relevantLinks.filter((link, index, self) =>
+        index === self.findIndex((l) => (
+          l.href === link.href && l.label === link.label
+        ))
+      );
+
+      setNavLinks(uniqueLinks);
     }
   }, [pathname]);
 
