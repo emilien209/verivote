@@ -48,9 +48,7 @@ export default function LoginPage() {
         const result = await verifyOfficial({ email, password });
         if (result.isAuthenticated) {
           localStorage.setItem('userRole', 'official');
-          // Redirect officials to a specific dashboard or a generic one
-          // For now, let's direct them to the main voter dashboard as an example
-          router.push('/dashboard');
+          router.push('/official/cast-vote');
         } else {
           setError('Invalid official credentials.');
         }

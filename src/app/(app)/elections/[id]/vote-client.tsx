@@ -11,29 +11,31 @@ import type { Candidate } from '@/lib/types';
 import { CheckCircle } from 'lucide-react';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
-export function VoteClient({ candidates }: { candidates: Candidate[] }) {
+export function VoteClient({ candidates, onVoteCasted, voterName: initialVoterName }: { candidates: Candidate[], onVoteCasted?: () => void; voterName?: string; }) {
   const [selectedCandidate, setSelectedCandidate] = useState<string | null>(null);
-  const [voterName, setVoterName] = useState<string | null>(null);
+  const [voterName, setVoterName] = useState<string | null>(initialVoterName || null);
   const [hasVoted, setHasVoted] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
-    const name = localStorage.getItem('voterName');
-    if (name) {
-      setVoterName(name);
-    } else {
-      toast({
-        title: 'Error',
-        description: 'Could not identify voter. Please log in again.',
-        variant: 'destructive',
-      });
+    if(!initialVoterName) {
+      const name = localStorage.getItem('voterName');
+      if (name) {
+        setVoterName(name);
+      } else {
+        toast({
+          title: 'Error',
+          description: 'Could not identify voter. Please log in again.',
+          variant: 'destructive',
+        });
+      }
     }
     // Check if the user has already voted in this session
     const votedStatus = localStorage.getItem('hasVoted_presidential-2024');
-    if (votedStatus === 'true') {
+    if (votedStatus === 'true' && !onVoteCasted) { // Only block if it's a direct voter, not an official
         setHasVoted(true);
     }
-  }, [toast]);
+  }, [toast, initialVoterName, onVoteCasted]);
 
   const handleVote = () => {
     if (!selectedCandidate) {
@@ -47,9 +49,13 @@ export function VoteClient({ candidates }: { candidates: Candidate[] }) {
     // In a real app, this would involve encryption and a secure transaction
     console.log(`Voted for candidate: ${selectedCandidate}`);
 
-    // Mark that the user has voted for this specific election
-    localStorage.setItem('hasVoted_presidential-2024', 'true');
-    setHasVoted(true);
+    if (onVoteCasted) {
+        onVoteCasted();
+    } else {
+        // Mark that the user has voted for this specific election
+        localStorage.setItem('hasVoted_presidential-2024', 'true');
+        setHasVoted(true);
+    }
 
     toast({
         title: 'Vote Cast Successfully!',
@@ -104,7 +110,7 @@ export function VoteClient({ candidates }: { candidates: Candidate[] }) {
       <div className="mt-8 flex justify-center">
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <Button size="lg" disabled={!selectedCandidate || !voterName || hasVoted} className="bg-accent text-accent-foreground hover:bg-accent/90">
+            <Button size="lg" disabled={!selectedCandidate || !voterName} className="bg-accent text-accent-foreground hover:bg-accent/90">
               Cast Your Vote
             </Button>
           </AlertDialogTrigger>
