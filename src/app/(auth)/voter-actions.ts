@@ -4,6 +4,8 @@ import type { Voter } from '@/lib/types';
 import fs from 'fs';
 import path from 'path';
 import { revalidatePath } from 'next/cache';
+import { verifyUser } from '@/ai/flows/user-verification';
+
 
 const dbPath = path.resolve(process.cwd(), 'src/lib/mock-voters.json');
 
@@ -34,15 +36,35 @@ function writeVoters(voters: Voter[]): void {
 // --- Public Actions ---
 
 // Called from the voter registration page
-export async function handleVoterRegistration(voterData: Omit<Voter, 'id' | 'status'>) {
+export async function handleVoterRegistration(voterData: Omit<Voter, 'id' | 'status'> & { firstName: string; lastName: string }) {
+    
+    // 1. Verify against NIDA mock database first
+    const verificationResult = await verifyUser({
+        nationalId: voterData.nationalId,
+        firstName: voterData.firstName,
+        lastName: voterData.lastName
+    });
+
+    if (!verificationResult.isRecognized) {
+        return { success: false, error: 'This National ID is not recognized in the NIDA database.' };
+    }
+    if (!verificationResult.isNameMatch) {
+        return { success: false, error: 'The provided name does not match the record for this National ID.' };
+    }
+    
     const voters = readVoters();
     
+    // 2. Check for duplicates in our local voter database
     if (voters.some(v => v.email === voterData.email || v.nationalId === voterData.nationalId)) {
-        return { success: false, error: 'A user with this email or National ID already exists.' };
+        return { success: false, error: 'A user with this email or National ID is already registered or pending approval.' };
     }
 
+    // 3. If all checks pass, create the pending registration
     const newVoter: Voter = {
-        ...voterData,
+        fullName: voterData.fullName,
+        nationalId: voterData.nationalId,
+        email: voterData.email,
+        password: voterData.password,
         id: `voter-${Date.now()}`,
         status: 'pending',
     };
@@ -88,6 +110,12 @@ export async function updateVoterStatus(voterId: string, newStatus: 'approved' |
     }
 
     voters[voterIndex].status = newStatus;
+
+    if (newStatus === 'approved') {
+        // Simulate sending a confirmation email
+        console.log(`Simulating: Sending approval confirmation email to ${voters[voterIndex].email}`);
+    }
+
     writeVoters(voters);
 
     revalidatePath('/admin/manage-voters');
@@ -105,6 +133,6 @@ export async function removeVoter(voterId: string) {
     }
   
     writeVoters(voters);
-    revalidatePath('/admin/manage-voters');
+revalidatePath('/admin/manage-voters');
     return { success: true };
 }

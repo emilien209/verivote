@@ -29,7 +29,8 @@ export default function RegisterPage() {
     setSuccess(false);
 
     const formData = new FormData(e.currentTarget);
-    const fullName = formData.get('fullName') as string;
+    const firstName = formData.get('firstName') as string;
+    const lastName = formData.get('lastName') as string;
     const nationalId = formData.get('nationalId') as string;
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
@@ -39,9 +40,11 @@ export default function RegisterPage() {
       setError('Passwords do not match.');
       return;
     }
+    
+    const fullName = `${firstName} ${lastName}`;
 
     startTransition(async () => {
-      const result = await handleVoterRegistration({ fullName, nationalId, email, password });
+      const result = await handleVoterRegistration({ firstName, lastName, fullName, nationalId, email, password });
       if (result.success) {
         setSuccess(true);
       } else {
@@ -55,7 +58,7 @@ export default function RegisterPage() {
       <CardHeader>
         <CardTitle className="text-2xl">Voter Registration</CardTitle>
         <CardDescription>
-          Create your account to participate in upcoming elections. Your registration will be reviewed by an administrator.
+          Your identity will be verified against the NIDA database. Once verified, your application will be sent for admin approval.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -69,7 +72,7 @@ export default function RegisterPage() {
           <Alert>
             <AlertTitle>Registration Submitted!</AlertTitle>
             <AlertDescription>
-              Your registration is pending approval. You will be able to log in once an administrator has approved your account.
+              Your registration is pending approval. You will be able to log in once an administrator has approved your account. A confirmation will be sent to your email.
               <Button asChild className="mt-4 w-full">
                 <Link href="/login">Back to Login</Link>
               </Button>
@@ -77,9 +80,15 @@ export default function RegisterPage() {
           </Alert>
         ) : (
           <form onSubmit={handleSubmit} className="grid gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="fullName">Full Name</Label>
-              <Input id="fullName" name="fullName" placeholder="John Doe" required disabled={isPending} />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="firstName">First Name</Label>
+                <Input id="firstName" name="firstName" placeholder="John" required disabled={isPending} />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="lastName">Last Name</Label>
+                <Input id="lastName" name="lastName" placeholder="Doe" required disabled={isPending} />
+              </div>
             </div>
             <div className="grid gap-2">
               <Label htmlFor="nationalId">National ID</Label>
