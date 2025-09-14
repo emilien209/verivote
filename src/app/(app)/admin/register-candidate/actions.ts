@@ -30,7 +30,7 @@ function writeCandidates(candidates: Candidate[]): void {
 }
 
 // This is a mock function. In a real app, you would save to a database.
-async function addCandidateToDb(candidate: { name: string, party: string, platform: string, imageUrl: string, imageHint: string }) {
+async function addCandidateToDb(candidate: { name: string, party: string, platform: string, imageUrl: string }) {
   const candidates = readCandidates();
   const newId = `c${Date.now()}`;
   const newCandidate: Candidate = { ...candidate, id: newId };
@@ -39,7 +39,7 @@ async function addCandidateToDb(candidate: { name: string, party: string, platfo
   return { success: true };
 }
 
-export async function addCandidate(candidate: { name: string, party: string, platform: string, imageUrl: string, imageHint: string }) {
+export async function addCandidate(candidate: { name: string, party: string, platform: string, imageUrl: string }) {
   try {
     const result = await addCandidateToDb(candidate);
     if (result.success) {

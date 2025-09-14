@@ -95,7 +95,6 @@ export function VoteClient({ candidates, onVoteCasted, voterName: initialVoterNa
                 width={128}
                 height={128}
                 className="rounded-full"
-                data-ai-hint={candidate.imageHint}
               />
             </div>
             <div className="text-center">

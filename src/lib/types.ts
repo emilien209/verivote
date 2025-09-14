@@ -4,7 +4,6 @@ export type Candidate = {
   party: string;
   platform: string;
   imageUrl: string;
-  imageHint: string;
 };
 
 export type Election = {

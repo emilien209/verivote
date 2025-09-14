@@ -75,7 +75,6 @@ export function CandidateSummary({ candidates }: { candidates: Candidate[] }) {
                 width={100}
                 height={100}
                 className="rounded-full border-4 border-muted"
-                data-ai-hint={candidate.imageHint}
               />
             </CardHeader>
             <CardContent className="text-center flex-grow">
