@@ -18,6 +18,7 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useSidebar } from '@/components/ui/sidebar';
 import { Logo } from '../logo';
+import { useLanguage } from '@/contexts/language-context';
 
 type NavLink = {
   href: string;
@@ -27,6 +28,7 @@ type NavLink = {
 
 export function Header({ navLinks }: { navLinks: NavLink[] }) {
   const { toggleSidebar } = useSidebar();
+  const { setLanguage } = useLanguage();
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-card px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
       <Sheet>
@@ -66,9 +68,9 @@ export function Header({ navLinks }: { navLinks: NavLink[] }) {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Language</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>English</DropdownMenuItem>
-          <DropdownMenuItem>French</DropdownMenuItem>
-          <DropdownMenuItem>Kinyarwanda</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setLanguage('en')}>English</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setLanguage('fr')}>French</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setLanguage('rw')}>Kinyarwanda</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 

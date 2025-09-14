@@ -1,0 +1,26 @@
+
+{
+  "login": {
+    "title": "Bienvenue sur VeriVote",
+    "description": "Veuillez vous connecter pour continuer.",
+    "form": {
+      "email": {
+        "label": "E-mail",
+        "placeholder": "nom@example.com"
+      },
+      "password": {
+        "label": "Mot de passe"
+      },
+      "submit": "Se connecter"
+    },
+    "error": {
+      "title": "Échec de la connexion",
+      "pending": "Votre inscription est toujours en attente d'approbation. Veuillez revenir plus tard.",
+      "rejected": "Votre inscription a été rejetée. Veuillez contacter un administrateur pour obtenir de l'aide.",
+      "invalid": "Identifiants invalides ou inscription non approuvée. Veuillez vérifier votre e-mail et votre mot de passe."
+    },
+    "admin_official_info": "Êtes-vous un administrateur ou un officiel ? Vos identifiants vous donneront accès.",
+    "no_account": "Vous n'avez pas de compte électeur ?",
+    "register_button": "S'inscrire pour voter"
+  }
+}

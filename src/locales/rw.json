@@ -1,0 +1,26 @@
+
+{
+  "login": {
+    "title": "Ikaze kuri VeriVote",
+    "description": "Nyamuneka, injira kugirango ukomeze.",
+    "form": {
+      "email": {
+        "label": "Imeyili",
+        "placeholder": "izina@urugero.com"
+      },
+      "password": {
+        "label": "Ijambobanga"
+      },
+      "submit": "Injira"
+    },
+    "error": {
+      "title": "Kwinjira Byanze",
+      "pending": "Kwiyandikisha kwawe kuracyategereje kwemezwa. Nyamuneka, ongera ugerageze nyuma.",
+      "rejected": "Kwiyandikisha kwawe kwaranze. Nyamuneka, vugana n'umuyobozi kugirango agufashe.",
+      "invalid": "Amakuru y'injira atariyo cyangwa kwiyandikisha kutaremezwa. Nyamuneka, reba imeyili yawe n'ijambobanga."
+    },
+    "admin_official_info": "Uri umuyobozi cyangwa umukozi? Amakuru yawe y'injira azaguha uburenganzira.",
+    "no_account": "Nta konti y'umutora ufite?",
+    "register_button": "Iyandikishe gutora"
+  }
+}

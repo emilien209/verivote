@@ -20,11 +20,13 @@ import { verifyOfficial } from '@/ai/flows/official-verification';
 import { verifyVoterLogin } from '../voter-actions';
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
+import { useTranslation } from '@/hooks/use-translation';
 
 export default function LoginPage() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -61,66 +63,66 @@ export default function LoginPage() {
             router.push('/dashboard');
             return;
          } else if (voterResult.status === 'pending') {
-            setError('Your registration is still pending approval. Please check back later.');
+            setError(t('login.error.pending'));
             return;
          } else {
-            setError('Your registration has been rejected. Please contact an administrator for assistance.');
+            setError(t('login.error.rejected'));
             return;
          }
       }
       
       // If no role matches
-      setError('Invalid credentials or registration not approved. Please check your email and password.');
+      setError(t('login.error.invalid'));
     });
   };
 
   return (
     <Card className="mx-auto w-full max-w-sm">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl">Welcome to VeriVote</CardTitle>
+        <CardTitle className="text-2xl">{t('login.title')}</CardTitle>
         <CardDescription>
-          Please sign in to continue.
+          {t('login.description')}
         </CardDescription>
       </CardHeader>
       <CardContent>
         {error && (
             <Alert variant="destructive" className="mb-4">
-            <AlertTitle>Login Failed</AlertTitle>
+            <AlertTitle>{t('login.error.title')}</AlertTitle>
             <AlertDescription>{error}</AlertDescription>
             </Alert>
         )}
         <form onSubmit={handleLogin} className="grid gap-4">
           <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t('login.form.email.label')}</Label>
             <Input
               id="email"
               name="email"
               type="email"
-              placeholder="name@example.com"
+              placeholder={t('login.form.email.placeholder')}
               required
               disabled={isPending}
             />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">{t('login.form.password.label')}</Label>
             <Input id="password" name="password" type="password" required disabled={isPending} />
           </div>
           <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={isPending}>
             {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Sign In
+            {t('login.form.submit')}
           </Button>
         </form>
         <Separator className="my-6" />
          <div className="text-center">
             <p className="text-sm text-muted-foreground">
-                Are you an admin or official? Your credentials will grant you access.
+                {t('login.admin_official_info')}
             </p>
         </div>
       </CardContent>
       <CardFooter className="flex flex-col gap-4">
-        <p className="text-sm text-muted-foreground">Don't have a voter account?</p>
+        <p className="text-sm text-muted-foreground">{t('login.no_account')}</p>
         <Button variant="outline" className="w-full" asChild>
-          <Link href="/register">Register to Vote</Link>
+          <Link href="/register">{t('login.register_button')}</Link>
         </Button>
       </CardFooter>
     </Card>

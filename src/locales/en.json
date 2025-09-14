@@ -1,0 +1,26 @@
+
+{
+  "login": {
+    "title": "Welcome to VeriVote",
+    "description": "Please sign in to continue.",
+    "form": {
+      "email": {
+        "label": "Email",
+        "placeholder": "name@example.com"
+      },
+      "password": {
+        "label": "Password"
+      },
+      "submit": "Sign In"
+    },
+    "error": {
+      "title": "Login Failed",
+      "pending": "Your registration is still pending approval. Please check back later.",
+      "rejected": "Your registration has been rejected. Please contact an administrator for assistance.",
+      "invalid": "Invalid credentials or registration not approved. Please check your email and password."
+    },
+    "admin_official_info": "Are you an admin or official? Your credentials will grant you access.",
+    "no_account": "Don't have a voter account?",
+    "register_button": "Register to Vote"
+  }
+}
