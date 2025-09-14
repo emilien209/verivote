@@ -16,8 +16,6 @@ import { useState, useTransition } from 'react';
 import { Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { addCandidate } from './actions';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
-
 
 export default function RegisterCandidatePage() {
   const router = useRouter();
@@ -30,19 +28,16 @@ export default function RegisterCandidatePage() {
     const name = formData.get('name') as string;
     const party = formData.get('party') as string;
     const platform = formData.get('platform') as string;
+    const imageUrl = formData.get('imageUrl') as string;
+    const imageHint = formData.get('imageHint') as string;
     
-    // For now, let's use a placeholder image.
-    // In a real app, you would handle file uploads.
-    const randomImage = PlaceHolderImages[Math.floor(Math.random() * 4)];
-
-
     startTransition(async () => {
       const result = await addCandidate({ 
         name, 
         party, 
         platform, 
-        imageUrl: randomImage.imageUrl, 
-        imageHint: randomImage.imageHint 
+        imageUrl, 
+        imageHint
       });
 
       if (result.success) {
@@ -68,7 +63,7 @@ export default function RegisterCandidatePage() {
         <CardHeader>
             <CardTitle className="text-xl">Register New Candidate</CardTitle>
             <CardDescription>
-            Enter the candidate's information to add them to the election. A random placeholder image will be assigned.
+            Enter the candidate's information to add them to the election.
             </CardDescription>
         </CardHeader>
         <CardContent>
@@ -84,6 +79,14 @@ export default function RegisterCandidatePage() {
               <div className="grid gap-2">
                   <Label htmlFor="platform">Platform Summary</Label>
                   <Textarea id="platform" name="platform" placeholder="Summarize the candidate's main platform points." required disabled={isPending} />
+              </div>
+              <div className="grid gap-2">
+                  <Label htmlFor="imageUrl">Image URL</Label>
+                  <Input id="imageUrl" name="imageUrl" placeholder="https://example.com/photo.jpg" required type="url" disabled={isPending} />
+              </div>
+               <div className="grid gap-2">
+                  <Label htmlFor="imageHint">Image Hint</Label>
+                  <Input id="imageHint" name="imageHint" placeholder="e.g., woman portrait" required disabled={isPending} />
               </div>
             <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={isPending}>
                 {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
