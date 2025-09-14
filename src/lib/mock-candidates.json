@@ -1,10 +1,11 @@
+
 [
   {
-    "name": "kayi one",
-    "party": "presedent",
-    "platform": "I want to create a second module where voters can register themselves, but the admin must approve them before they are allowed to vote. Once approved, their email can log in and vote. The admin can also remove them, and if they try to register again, they must provide full and verifiable information.",
-    "imageUrl": "https://picsum.photos/seed/4/200/200",
-    "imageHint": "man glasses",
-    "id": "c1757854192723"
+    "name": "Kayi One",
+    "party": "President",
+    "platform": "I want the website to automatically change the language based on the user’s chosen preference.",
+    "imageUrl": "https://i.pinimg.com/564x/b8/b4/23/b8b423f46a2a917240c496c14e1a5aa1.jpg",
+    "imageHint": "man portrait",
+    "id": "c1757856035637"
   }
 ]
