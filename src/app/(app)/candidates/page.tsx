@@ -1,10 +1,11 @@
 import { CandidateSummary } from './candidate-summary';
-import type { Candidate } from '@/lib/types';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { getCandidates } from './actions';
 
-const MOCK_CANDIDATES: Candidate[] = [];
+export const revalidate = 0; // Ensure this page is always dynamic
 
-export default function CandidatesPage() {
+export default async function CandidatesPage() {
+  const candidates = await getCandidates();
+  
   return (
     <div className="flex flex-col gap-8">
       <div>
@@ -14,7 +15,11 @@ export default function CandidatesPage() {
         </p>
       </div>
 
-      <CandidateSummary candidates={MOCK_CANDIDATES} />
+      {candidates.length > 0 ? (
+         <CandidateSummary candidates={candidates} />
+      ) : (
+        <p className="text-center text-muted-foreground mt-8">No candidates have been registered for this election yet.</p>
+      )}
     </div>
   );
 }

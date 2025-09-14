@@ -16,6 +16,7 @@ import { useState, useTransition } from 'react';
 import { Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { addCandidate } from './actions';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 
 export default function RegisterCandidatePage() {
@@ -29,16 +30,26 @@ export default function RegisterCandidatePage() {
     const name = formData.get('name') as string;
     const party = formData.get('party') as string;
     const platform = formData.get('platform') as string;
+    
+    // For now, let's use a placeholder image.
+    // In a real app, you would handle file uploads.
+    const randomImage = PlaceHolderImages[Math.floor(Math.random() * 4)];
+
 
     startTransition(async () => {
-      const result = await addCandidate({ name, party, platform });
+      const result = await addCandidate({ 
+        name, 
+        party, 
+        platform, 
+        imageUrl: randomImage.imageUrl, 
+        imageHint: randomImage.imageHint 
+      });
 
       if (result.success) {
         toast({
           title: "Candidate Registered Successfully",
           description: `${name} (${party}) has been added to the candidate list.`,
         });
-        // Reset form
         (e.target as HTMLFormElement).reset();
         router.push('/candidates');
       } else {
@@ -74,9 +85,11 @@ export default function RegisterCandidatePage() {
                   <Label htmlFor="platform">Platform Summary</Label>
                   <Textarea id="platform" name="platform" placeholder="Summarize the candidate's main platform points." required disabled={isPending} />
               </div>
+              {/* Note: File upload is complex for this environment. We'll assign a random placeholder. */}
                <div className="grid gap-2">
                   <Label htmlFor="photo">Candidate Photo</Label>
-                  <Input id="photo" name="photo" type="file" required disabled={isPending} />
+                  <Input id="photo" name="photo" type="file" disabled />
+                   <p className="text-xs text-muted-foreground">Photo upload is disabled. A placeholder will be used.</p>
               </div>
 
             <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={isPending}>

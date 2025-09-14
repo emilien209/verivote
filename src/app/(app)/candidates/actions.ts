@@ -2,6 +2,35 @@
 
 import { summarizeCandidates, type SummarizeCandidatesInput } from '@/ai/flows/candidate-info-summarization';
 import { revalidatePath } from 'next/cache';
+import fs from 'fs';
+import path from 'path';
+import type { Candidate } from '@/lib/types';
+
+
+const dbPath = path.resolve(process.cwd(), 'src/lib/mock-candidates.json');
+
+function readCandidates(): Candidate[] {
+  try {
+    if (fs.existsSync(dbPath)) {
+      const data = fs.readFileSync(dbPath, 'utf-8');
+      return JSON.parse(data);
+    }
+    return [];
+  } catch (error) {
+    console.error("Error reading candidates file:", error);
+    return [];
+  }
+}
+
+function writeCandidates(candidates: Candidate[]): void {
+  try {
+    fs.writeFileSync(dbPath, JSON.stringify(candidates, null, 2));
+  } catch (error)
+    {
+    console.error("Error writing candidates file:", error);
+  }
+}
+
 
 export async function getCandidateSummary(candidatesInfo: SummarizeCandidatesInput) {
   try {
@@ -15,10 +44,12 @@ export async function getCandidateSummary(candidatesInfo: SummarizeCandidatesInp
 
 // This is a mock function. In a real app, you would remove from a database.
 async function removeCandidateFromDb(candidateId: string) {
-  console.log('Removing candidate from DB:', candidateId);
-  // This would be a database operation.
-  // We can't modify the mock file, so we can't truly remove a candidate.
-  // We will just simulate success.
+  const candidates = readCandidates();
+  const updatedCandidates = candidates.filter(c => c.id !== candidateId);
+  if (candidates.length === updatedCandidates.length) {
+    return { success: false, error: 'Candidate not found.' };
+  }
+  writeCandidates(updatedCandidates);
   return { success: true };
 }
 
@@ -30,9 +61,13 @@ export async function removeCandidate(candidateId: string) {
       revalidatePath('/candidates');
       return { success: true };
     }
-    return { success: false, error: 'Failed to remove candidate.' };
+    return { success: false, error: result.error || 'Failed to remove candidate.' };
   } catch (error) {
     console.error(error);
     return { success: false, error: 'An unexpected error occurred.' };
   }
+}
+
+export async function getCandidates(): Promise<Candidate[]> {
+    return readCandidates();
 }
