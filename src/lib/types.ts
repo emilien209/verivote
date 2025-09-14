@@ -22,3 +22,12 @@ export type Official = {
   name: string;
   email: string;
 };
+
+export type Voter = {
+  id: string;
+  fullName: string;
+  nationalId: string;
+  email: string;
+  password?: string; // Password should not be sent to client
+  status: 'pending' | 'approved' | 'rejected';
+}

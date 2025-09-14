@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "name": "kayi one",
+    "party": "presedent",
+    "platform": "I want to create a second module where voters can register themselves, but the admin must approve them before they are allowed to vote. Once approved, their email can log in and vote. The admin can also remove them, and if they try to register again, they must provide full and verifiable information.",
+    "imageUrl": "https://picsum.photos/seed/4/200/200",
+    "imageHint": "man glasses",
+    "id": "c1757854192723"
+  }
+]

@@ -6,6 +6,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
@@ -16,6 +17,9 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Loader2 } from 'lucide-react';
 import { verifyAdmin } from '@/ai/flows/admin-verification';
 import { verifyOfficial } from '@/ai/flows/official-verification';
+import { verifyVoterLogin } from '../voter-actions';
+import Link from 'next/link';
+import { Separator } from '@/components/ui/separator';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -29,9 +33,10 @@ export default function LoginPage() {
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
 
-
     startTransition(async () => {
-      // Admin check first, as they are a special type of official
+      // Role is determined by email/password combo, checking in order of privilege
+      
+      // 1. Admin check
       const adminResult = await verifyAdmin({ email, password });
       if (adminResult.isAuthenticated) {
         localStorage.setItem('userRole', 'admin');
@@ -39,22 +44,42 @@ export default function LoginPage() {
         return;
       }
       
-      const result = await verifyOfficial({ email, password });
-      if (result.isAuthenticated) {
+      // 2. Official check
+      const officialResult = await verifyOfficial({ email, password });
+      if (officialResult.isAuthenticated) {
         localStorage.setItem('userRole', 'official');
         router.push('/official/cast-vote');
-      } else {
-        setError('You are not authorized to access this service. Please contact an administrator.');
+        return;
       }
+
+      // 3. Voter check
+      const voterResult = await verifyVoterLogin({ email, password });
+      if (voterResult.isAuthenticated) {
+         if (voterResult.status === 'approved') {
+            localStorage.setItem('userRole', 'voter');
+            localStorage.setItem('voterName', voterResult.name || '');
+            router.push('/dashboard');
+            return;
+         } else if (voterResult.status === 'pending') {
+            setError('Your registration is still pending approval. Please check back later.');
+            return;
+         } else {
+            setError('Your registration has been rejected. Please contact an administrator for assistance.');
+            return;
+         }
+      }
+      
+      // If no role matches
+      setError('Invalid credentials or registration not approved. Please check your email and password.');
     });
   };
 
   return (
     <Card className="mx-auto w-full max-w-sm">
-      <CardHeader>
-        <CardTitle className="text-2xl">Official & Admin Login</CardTitle>
+      <CardHeader className="text-center">
+        <CardTitle className="text-2xl">Welcome to VeriVote</CardTitle>
         <CardDescription>
-          Enter your official credentials to log in and manage the election process.
+          Please sign in to continue.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -71,7 +96,7 @@ export default function LoginPage() {
               id="email"
               name="email"
               type="email"
-              placeholder="official@example.com"
+              placeholder="name@example.com"
               required
               disabled={isPending}
             />
@@ -82,10 +107,22 @@ export default function LoginPage() {
           </div>
           <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={isPending}>
             {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Login
+            Sign In
           </Button>
         </form>
+        <Separator className="my-6" />
+         <div className="text-center">
+            <p className="text-sm text-muted-foreground">
+                Are you an admin or official? Your credentials will grant you access.
+            </p>
+        </div>
       </CardContent>
+      <CardFooter className="flex flex-col gap-4">
+        <p className="text-sm text-muted-foreground">Don't have a voter account?</p>
+        <Button variant="outline" className="w-full" asChild>
+          <Link href="/register">Register to Vote</Link>
+        </Button>
+      </CardFooter>
     </Card>
   );
 }

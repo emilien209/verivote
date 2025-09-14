@@ -14,18 +14,25 @@ import {
 } from '@/components/ui/sidebar';
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
-import { LogOut, Shield, UserRoundPlus, UserCog, Vote, Users } from 'lucide-react';
+import { LogOut, Shield, UserRoundPlus, UserCog, Vote, Users, Home, UserCheck } from 'lucide-react';
 import { Header } from './header';
 import { useState, useEffect } from 'react';
 
 
 const allNavLinks = [
+    // Admin Links
     { href: '/admin', label: 'Admin Dashboard', icon: <Shield size={20} />, role: 'admin' },
     { href: '/admin/register-candidate', label: 'Register Candidate', icon: <UserRoundPlus size={20} />, role: 'admin' },
     { href: '/admin/manage-officials', label: 'Manage Officials', icon: <UserCog size={20} />, role: 'admin' },
-    { href: '/official/cast-vote', label: 'Cast Vote', icon: <Vote size={20} />, role: 'official' },
-    { href: '/candidates', label: 'Candidates', icon: <Users size={20} />, role: 'official' },
+    { href: '/admin/manage-voters', label: 'Manage Voters', icon: <UserCheck size={20} />, role: 'admin' },
+    // Official Links
+    { href: '/official/cast-vote', label: 'Facilitate Voting', icon: <Vote size={20} />, role: 'official' },
+    // Voter Links
+    { href: '/dashboard', label: 'Dashboard', icon: <Home size={20} />, role: 'voter' },
+    // Shared Links
     { href: '/candidates', label: 'Candidates', icon: <Users size={20} />, role: 'admin' },
+    { href: '/candidates', label: 'Candidates', icon: <Users size={20} />, role: 'official' },
+    { href: '/candidates', label: 'Candidates', icon: <Users size={20} />, role: 'voter' },
 ];
 
 export function AppLayout({
@@ -43,7 +50,7 @@ export function AppLayout({
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const userRole = localStorage.getItem('userRole') || 'official';
+      const userRole = localStorage.getItem('userRole') || 'voter';
       const relevantLinks = allNavLinks.filter(link => link.role === userRole);
       
       // Remove duplicate links (e.g. Candidates for admin/official)
