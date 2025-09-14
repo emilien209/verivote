@@ -68,7 +68,7 @@ export default function RegisterCandidatePage() {
         <CardHeader>
             <CardTitle className="text-xl">Register New Candidate</CardTitle>
             <CardDescription>
-            Enter the candidate's information to add them to the election.
+            Enter the candidate's information to add them to the election. A random placeholder image will be assigned.
             </CardDescription>
         </CardHeader>
         <CardContent>
@@ -85,13 +85,6 @@ export default function RegisterCandidatePage() {
                   <Label htmlFor="platform">Platform Summary</Label>
                   <Textarea id="platform" name="platform" placeholder="Summarize the candidate's main platform points." required disabled={isPending} />
               </div>
-              {/* Note: File upload is complex for this environment. We'll assign a random placeholder. */}
-               <div className="grid gap-2">
-                  <Label htmlFor="photo">Candidate Photo</Label>
-                  <Input id="photo" name="photo" type="file" disabled />
-                   <p className="text-xs text-muted-foreground">Photo upload is disabled. A placeholder will be used.</p>
-              </div>
-
             <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={isPending}>
                 {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Register Candidate

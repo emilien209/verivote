@@ -42,7 +42,6 @@ export async function getCandidateSummary(candidatesInfo: SummarizeCandidatesInp
   }
 }
 
-// This is a mock function. In a real app, you would remove from a database.
 async function removeCandidateFromDb(candidateId: string) {
   const candidates = readCandidates();
   const updatedCandidates = candidates.filter(c => c.id !== candidateId);

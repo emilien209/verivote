@@ -21,12 +21,13 @@ export function CandidateSummary({ candidates }: { candidates: Candidate[] }) {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    // A simple way to check if the user is an admin on the client side.
-    // In a real app, this should be handled more securely.
-    if (pathname.startsWith('/admin')) {
-      setIsAdmin(true);
+    if (typeof window !== 'undefined') {
+      const userRole = localStorage.getItem('userRole');
+      if (userRole === 'admin') {
+        setIsAdmin(true);
+      }
     }
-  }, [pathname]);
+  }, []);
 
   const handleGenerateSummary = () => {
     startTransition(async () => {
