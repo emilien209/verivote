@@ -14,8 +14,8 @@ import { MOCK_USERS } from './mock-users';
 
 const VerifyUserInputSchema = z.object({
   nationalId: z.string().describe("The user's National ID."),
-  firstName: z.string().describe("The user's first name."),
-  lastName: z.string().describe("The user's last name."),
+  firstName: z.string().optional().describe("The user's first name."),
+  lastName: z.string().optional().describe("The user's last name."),
 });
 export type VerifyUserInput = z.infer<typeof VerifyUserInputSchema>;
 
@@ -48,6 +48,19 @@ const verifyUserFlow = ai.defineFlow(
         isNameMatch: false,
       };
     }
+    
+    // If names are not provided, we can't check for a match, but the user is recognized.
+    if (!input.firstName || !input.lastName) {
+        return {
+            isRecognized: true,
+            isNameMatch: false, // Cannot confirm name match
+            user: {
+                firstName: user.firstName,
+                lastName: user.lastName,
+            }
+        }
+    }
+
 
     const nameMatches = user.firstName.toLowerCase() === input.firstName.toLowerCase() && user.lastName.toLowerCase() === input.lastName.toLowerCase();
 
