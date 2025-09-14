@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useState, useTransition, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -16,15 +16,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { verifyUser } from '@/ai/flows/user-verification';
 import { VoteClient } from '@/app/(app)/elections/[id]/vote-client';
 import type { Candidate } from '@/lib/types';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { useToast } from '@/hooks/use-toast';
-
-const MOCK_CANDIDATES: Candidate[] = [
-  { id: 'c1', name: 'Alice Johnson', party: 'Unity Party', platform: 'Focuses on economic growth and technological innovation.', imageUrl: PlaceHolderImages.find(p => p.id === 'candidate-1')?.imageUrl || '', imageHint: 'woman portrait' },
-  { id: 'c2', name: 'Bob Williams', party: 'Progress Alliance', platform: 'Advocates for social welfare programs and environmental protection.', imageUrl: PlaceHolderImages.find(p => p.id === 'candidate-2')?.imageUrl || '', imageHint: 'man portrait' },
-  { id: 'c3', name: 'Carol Davis', party: 'Heritage Front', platform: 'Promotes traditional values and national sovereignty.', imageUrl: PlaceHolderImages.find(p => p.id === 'candidate-3')?.imageUrl || '', imageHint: 'woman smiling' },
-  { id: 'c4', name: 'David Garcia', party: 'Liberty Coalition', platform: 'Stands for individual freedoms and minimal government intervention.', imageUrl: PlaceHolderImages.find(p => p.id === 'candidate-4')?.imageUrl || '', imageHint: 'man glasses' },
-];
+import { getCandidates } from '@/app/(app)/candidates/actions';
 
 enum VoterState {
   IDLE,
@@ -34,12 +26,20 @@ enum VoterState {
 }
 
 export default function OfficialCastVotePage() {
-  const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [voter, setVoter] = useState<{ name: string; nationalId: string } | null>(null);
   const [nationalIdInput, setNationalIdInput] = useState('');
   const [voterState, setVoterState] = useState<VoterState>(VoterState.IDLE);
+  const [candidates, setCandidates] = useState<Candidate[]>([]);
+
+  useEffect(() => {
+    async function fetchCandidates() {
+      const fetchedCandidates = await getCandidates();
+      setCandidates(fetchedCandidates);
+    }
+    fetchCandidates();
+  }, [voterState]); // Refetch when state changes, e.g., when moving to vote
 
   const handleVoterLookup = () => {
     setError(null);
@@ -88,7 +88,21 @@ export default function OfficialCastVotePage() {
                             Please assist <span className="font-bold">{voter?.name}</span> (ID: {voter?.nationalId}) in casting their vote.
                         </p>
                     </div>
-                    <VoteClient candidates={MOCK_CANDIDATES} onVoteCasted={handleVoteCasted} voterName={voter?.name || ''} />
+                     {candidates.length > 0 ? (
+                        <VoteClient candidates={candidates} onVoteCasted={handleVoteCasted} voterName={voter?.name || ''} />
+                    ) : (
+                        <Card className="mx-auto w-full max-w-md text-center">
+                            <CardHeader>
+                                <CardTitle>No Candidates Available</CardTitle>
+                                <CardDescription>
+                                    There are no candidates registered for this election yet. Please contact the administrator.
+                                </CardDescription>
+                            </CardHeader>
+                             <CardContent>
+                                <Button onClick={() => setVoterState(VoterState.IDLE)} className="w-full">Go Back</Button>
+                            </CardContent>
+                        </Card>
+                    )}
                 </div>
             );
         case VoterState.NOT_FOUND:
