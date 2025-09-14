@@ -1,3 +1,4 @@
+
 'use server';
 
 import { revalidatePath } from 'next/cache';
@@ -30,7 +31,7 @@ function writeCandidates(candidates: Candidate[]): void {
 }
 
 // This is a mock function. In a real app, you would save to a database.
-async function addCandidateToDb(candidate: { name: string, party: string, platform: string, imageUrl: string }) {
+async function addCandidateToDb(candidate: Omit<Candidate, 'id'>) {
   const candidates = readCandidates();
   const newId = `c${Date.now()}`;
   const newCandidate: Candidate = { ...candidate, id: newId };
