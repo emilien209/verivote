@@ -38,28 +38,14 @@ function writeVoters(voters: Voter[]): void {
 // Called from the voter registration page
 export async function handleVoterRegistration(voterData: Omit<Voter, 'id' | 'status'> & { firstName: string; lastName: string }) {
     
-    // 1. Verify against NIDA mock database first
-    const verificationResult = await verifyUser({
-        nationalId: voterData.nationalId,
-        firstName: voterData.firstName,
-        lastName: voterData.lastName
-    });
-
-    if (!verificationResult.isRecognized) {
-        return { success: false, error: 'This National ID is not recognized in the NIDA database.' };
-    }
-    if (!verificationResult.isNameMatch) {
-        return { success: false, error: 'The provided name does not match the record for this National ID.' };
-    }
-    
     const voters = readVoters();
     
-    // 2. Check for duplicates in our local voter database
+    // Check for duplicates in our local voter database
     if (voters.some(v => v.email === voterData.email || v.nationalId === voterData.nationalId)) {
         return { success: false, error: 'A user with this email or National ID is already registered or pending approval.' };
     }
 
-    // 3. If all checks pass, create the pending registration
+    // If all checks pass, create the pending registration
     const newVoter: Voter = {
         fullName: voterData.fullName,
         nationalId: voterData.nationalId,
