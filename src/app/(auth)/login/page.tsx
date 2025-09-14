@@ -77,14 +77,15 @@ export default function LoginPage() {
   };
 
   return (
-    <Card className="mx-auto w-full max-w-sm">
-      <CardHeader className="text-center">
-        <CardTitle className="text-2xl">{t('login.title')}</CardTitle>
+    <>
+      <CardHeader className="text-center p-0">
+        <CardTitle className="text-3xl font-bold">{t('login.title')}</CardTitle>
         <CardDescription>
           {t('login.description')}
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      
+      <div className="grid gap-4">
         {error && (
             <Alert variant="destructive" className="mb-4">
             <AlertTitle>{t('login.error.title')}</AlertTitle>
@@ -92,7 +93,7 @@ export default function LoginPage() {
             </Alert>
         )}
         <form onSubmit={handleLogin} className="grid gap-4">
-          <div className="grid gap-2">
+          <div className="grid gap-2 text-left">
             <Label htmlFor="email">{t('login.form.email.label')}</Label>
             <Input
               id="email"
@@ -103,7 +104,7 @@ export default function LoginPage() {
               disabled={isPending}
             />
           </div>
-          <div className="grid gap-2">
+          <div className="grid gap-2 text-left">
             <Label htmlFor="password">{t('login.form.password.label')}</Label>
             <Input id="password" name="password" type="password" required disabled={isPending} />
           </div>
@@ -112,19 +113,19 @@ export default function LoginPage() {
             {t('login.form.submit')}
           </Button>
         </form>
-        <Separator className="my-6" />
+        <Separator className="my-2" />
          <div className="text-center">
-            <p className="text-sm text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
                 {t('login.admin_official_info')}
             </p>
         </div>
-      </CardContent>
-      <CardFooter className="flex flex-col gap-4">
-        <p className="text-sm text-muted-foreground">{t('login.no_account')}</p>
-        <Button variant="outline" className="w-full" asChild>
-          <Link href="/register">{t('login.register_button')}</Link>
-        </Button>
-      </CardFooter>
-    </Card>
+      </div>
+      <div className="mt-4 text-center text-sm">
+        {t('login.no_account')}{' '}
+        <Link href="/register" className="underline">
+          {t('login.register_button')}
+        </Link>
+      </div>
+    </>
   );
 }

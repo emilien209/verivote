@@ -2,6 +2,7 @@ import type { Election, Candidate } from '@/lib/types';
 import { notFound } from 'next/navigation';
 import { VoteClient } from './vote-client';
 import { getCandidates } from '@/app/(app)/candidates/actions';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 async function getElectionData(id: string): Promise<Election | null> {
   if (id === 'presidential-2024') {
@@ -14,6 +15,7 @@ async function getElectionData(id: string): Promise<Election | null> {
         endDate: '2024-10-15',
         status: 'Ongoing',
         candidates: candidates,
+        imageUrl: PlaceHolderImages.find(p => p.id === 'election-banner-1')?.imageUrl || '',
     };
   }
   return null;

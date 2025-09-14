@@ -3,7 +3,6 @@
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {
-  Card,
   CardContent,
   CardDescription,
   CardHeader,
@@ -54,73 +53,71 @@ export default function RegisterPage() {
   };
 
   return (
-    <Card className="mx-auto w-full max-w-md">
-      <CardHeader>
-        <CardTitle className="text-2xl">Voter Registration</CardTitle>
+    <>
+      <CardHeader className="text-center p-0">
+        <CardTitle className="text-3xl font-bold">Voter Registration</CardTitle>
         <CardDescription>
-          Your identity will be verified against the NIDA database. Once verified, your application will be sent for admin approval.
+          Enter your information to create an account.
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        {error && (
-            <Alert variant="destructive" className="mb-4">
-            <AlertTitle>Registration Failed</AlertTitle>
-            <AlertDescription>{error}</AlertDescription>
-            </Alert>
-        )}
-        {success ? (
-          <Alert>
-            <AlertTitle>Registration Submitted!</AlertTitle>
-            <AlertDescription>
-              Your registration is pending approval. You will be able to log in once an administrator has approved your account. A confirmation will be sent to your email.
-              <Button asChild className="mt-4 w-full">
-                <Link href="/login">Back to Login</Link>
-              </Button>
-            </AlertDescription>
+
+      {error && (
+          <Alert variant="destructive" className="mb-4 text-left">
+          <AlertTitle>Registration Failed</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
           </Alert>
-        ) : (
-          <form onSubmit={handleSubmit} className="grid gap-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="firstName">First Name</Label>
-                <Input id="firstName" name="firstName" placeholder="John" required disabled={isPending} />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="lastName">Last Name</Label>
-                <Input id="lastName" name="lastName" placeholder="Doe" required disabled={isPending} />
-              </div>
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="nationalId">National ID</Label>
-              <Input id="nationalId" name="nationalId" placeholder="1234567890123456" required disabled={isPending} />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" name="email" type="email" placeholder="name@example.com" required disabled={isPending} />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="password">Password</Label>
-              <Input id="password" name="password" type="password" required disabled={isPending} />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
-              <Input id="confirmPassword" name="confirmPassword" type="password" required disabled={isPending} />
-            </div>
-            <Button type="submit" className="w-full" disabled={isPending}>
-              {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Register
+      )}
+      {success ? (
+        <Alert>
+          <AlertTitle>Registration Submitted!</AlertTitle>
+          <AlertDescription>
+            Your registration is pending approval. You will be able to log in once an administrator has approved your account.
+            <Button asChild className="mt-4 w-full">
+              <Link href="/login">Back to Login</Link>
             </Button>
-          </form>
-        )}
-      </CardContent>
-      <CardContent className="border-t pt-6 text-center">
-        <p className="text-sm text-muted-foreground">
-            Already have an account?{' '}
-            <Link href="/login" className="font-semibold text-primary underline-offset-4 hover:underline">
-                Login
-            </Link>
-        </p>
-      </CardContent>
-    </Card>
+          </AlertDescription>
+        </Alert>
+      ) : (
+        <form onSubmit={handleSubmit} className="grid gap-4">
+          <div className="grid grid-cols-2 gap-4 text-left">
+            <div className="grid gap-2">
+              <Label htmlFor="firstName">First Name</Label>
+              <Input id="firstName" name="firstName" placeholder="John" required disabled={isPending} />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="lastName">Last Name</Label>
+              <Input id="lastName" name="lastName" placeholder="Doe" required disabled={isPending} />
+            </div>
+          </div>
+          <div className="grid gap-2 text-left">
+            <Label htmlFor="nationalId">National ID</Label>
+            <Input id="nationalId" name="nationalId" placeholder="1234567890123456" required disabled={isPending} />
+          </div>
+          <div className="grid gap-2 text-left">
+            <Label htmlFor="email">Email</Label>
+            <Input id="email" name="email" type="email" placeholder="name@example.com" required disabled={isPending} />
+          </div>
+          <div className="grid gap-2 text-left">
+            <Label htmlFor="password">Password</Label>
+            <Input id="password" name="password" type="password" required disabled={isPending} />
+          </div>
+          <div className="grid gap-2 text-left">
+            <Label htmlFor="confirmPassword">Confirm Password</Label>
+            <Input id="confirmPassword" name="confirmPassword" type="password" required disabled={isPending} />
+          </div>
+          <Button type="submit" className="w-full" disabled={isPending}>
+            {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Register
+          </Button>
+        </form>
+      )}
+      
+      <div className="mt-4 text-center text-sm">
+        Already have an account?{' '}
+        <Link href="/login" className="underline">
+            Login
+        </Link>
+      </div>
+    </>
   );
 }
