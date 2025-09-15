@@ -1,17 +1,1 @@
-
-[
-  {
-    "name": "Kayi One",
-    "party": "Unity Party",
-    "platform": "Focused on economic growth and social welfare programs.",
-    "imageUrl": "https://i.pinimg.com/564x/0f/7c/4f/0f7c4f1c7e9b0b4117079f572a1548e3.jpg",
-    "id": "c1757857005327"
-  },
-  {
-    "name": "Kagame",
-    "party": "Progress Alliance",
-    "platform": "Dedicated to improving infrastructure and international relations.",
-    "imageUrl": "https://i.pinimg.com/564x/f7/a9/3c/f7a93c126e84860b64d0d08795c3b171.jpg",
-    "id": "c1757859305265"
-  }
-]
+[]
