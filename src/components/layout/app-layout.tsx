@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/sidebar';
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
-import { LogOut, Shield, UserRoundPlus, UserCog, Vote, Users, Home, UserCheck } from 'lucide-react';
+import { LogOut, Shield, UserRoundPlus, UserCog, Vote, Users, Home, UserCheck, MessageSquareQuestion, BookOpenCheck } from 'lucide-react';
 import { Header } from './header';
 import { useState, useEffect } from 'react';
 
@@ -33,6 +33,12 @@ const allNavLinks = [
     { href: '/candidates', label: 'Candidates', icon: <Users size={20} />, role: 'admin' },
     { href: '/candidates', label: 'Candidates', icon: <Users size={20} />, role: 'official' },
     { href: '/candidates', label: 'Candidates', icon: <Users size={20} />, role: 'voter' },
+    { href: '/guide', label: 'AI Guide', icon: <BookOpenCheck size={20} />, role: 'voter' },
+    { href: '/faq', label: 'FAQ Bot', icon: <MessageSquareQuestion size={20} />, role: 'voter' },
+    { href: '/guide', label: 'AI Guide', icon: <BookOpenCheck size={20} />, role: 'official' },
+    { href: '/faq', label: 'FAQ Bot', icon: <MessageSquareQuestion size={20} />, role: 'official' },
+    { href: '/guide', label: 'AI Guide', icon: <BookOpenCheck size={20} />, role: 'admin' },
+    { href: '/faq', label: 'FAQ Bot', icon: <MessageSquareQuestion size={20} />, role: 'admin' },
 ];
 
 export function AppLayout({
