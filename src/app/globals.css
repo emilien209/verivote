@@ -4,36 +4,36 @@
 
 @layer base {
   :root {
-    --background: 210 20% 98%; /* Light grey-blue for a clean, neutral backdrop */
-    --foreground: 222 47% 11%;
+    --background: 0 0% 96.1%; /* Light Gray (#F5F5F5) */
+    --foreground: 0 0% 20%; /* Dark Gray for text (#333333) */
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 0 0% 20%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-    --primary: 209 72% 41%; /* Blue from Rwandan flag */
+    --popover-foreground: 0 0% 20%;
+    --primary: 209 72% 41%; /* Blue (#1D70B8) */
     --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 96.1%;
+    --secondary: 0 0% 90%;
     --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
+    --muted: 0 0% 90%;
     --muted-foreground: 0 0% 45.1%;
-    --accent: 118 50% 40%; /* Green from Rwandan flag */
+    --accent: 118 50% 40%; /* Green (#3AAA35) */
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
+    --border: 0 0% 85%;
+    --input: 0 0% 85%;
     --ring: 209 72% 41%;
     --radius: 0.5rem;
-    --chart-1: 209 72% 41%;
-    --chart-2: 118 50% 40%;
-    --chart-3: 45 100% 50%; /* Yellow from Rwandan flag */
-    --chart-4: 215 28% 18%;
+    --chart-1: 209 72% 41%; /* Blue */
+    --chart-2: 118 50% 40%; /* Green */
+    --chart-3: 48 100% 50%; /* Yellow (#FFD100) */
+    --chart-4: 0 0% 40%;
     --chart-5: 27 87% 67%;
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 215 28% 18%;
     --sidebar-primary: 209 72% 41%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 20% 98%;
+    --sidebar-accent: 0 0% 96.1%;
     --sidebar-accent-foreground: 222 47% 11%;
     --sidebar-border: 0 0% 89.8%;
     --sidebar-ring: 209 72% 41%;
@@ -61,7 +61,7 @@
     --ring: 209 72% 51%;
     --chart-1: 209 72% 51%;
     --chart-2: 118 50% 50%;
-    --chart-3: 45 100% 60%; /* Brighter Yellow for dark mode */
+    --chart-3: 48 100% 60%; /* Brighter Yellow */
     --sidebar-background: 222 47% 14%;
     --sidebar-foreground: 210 20% 98%;
     --sidebar-primary: 209 72% 51%;
