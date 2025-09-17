@@ -41,6 +41,12 @@
       "description": "Banner for Local Government Elections",
       "imageUrl": "https://picsum.photos/seed/103/1200/400",
       "imageHint": "city hall"
+    },
+    {
+      "id": "auth-background",
+      "description": "Background image for the login/registration pages",
+      "imageUrl": "https://picsum.photos/seed/201/1200/800",
+      "imageHint": "voting background"
     }
   ]
 }

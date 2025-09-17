@@ -80,14 +80,14 @@ export default function LoginPage() {
 
   return (
     <>
-      <CardHeader className="text-center p-0">
+      <div className="text-left w-full">
         <CardTitle className="text-3xl font-bold">{t('login.title')}</CardTitle>
         <CardDescription>
           {t('login.description')}
         </CardDescription>
-      </CardHeader>
+      </div>
       
-      <div className="grid gap-4">
+      <div className="grid gap-4 w-full">
         {error && (
             <Alert variant="destructive" className="mb-4">
             <AlertTitle>{t('login.error.title')}</AlertTitle>
