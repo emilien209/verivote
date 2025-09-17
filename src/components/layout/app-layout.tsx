@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/button';
 import { LogOut, Shield, UserRoundPlus, UserCog, Vote, Users, Home, UserCheck, CircleHelp, BookOpenCheck } from 'lucide-react';
 import { Header } from './header';
 import { useState, useEffect } from 'react';
+import { LanguageProvider } from '@/contexts/language-context';
 
 
 const allNavLinks = [
@@ -72,45 +73,47 @@ export function AppLayout({
   }
 
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen w-full">
-        <Sidebar>
-          <SidebarHeader>
-            <Logo />
-          </SidebarHeader>
-          <SidebarContent>
-            <SidebarMenu>
-              {navLinks.map((link, index) => (
-                <SidebarMenuItem key={`${link.href}-${index}`}>
-                  <Link href={link.href}>
-                    <SidebarMenuButton
-                      isActive={pathname === link.href}
-                      tooltip={link.label}
-                    >
-                      {link.icon}
-                      <span>{link.label}</span>
-                    </SidebarMenuButton>
-                  </Link>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarContent>
-          <SidebarFooter>
-            <Link href="/login">
-              <Button variant="ghost" className="w-full justify-start gap-2">
-                <LogOut size={16} />
-                <span className="group-data-[collapsible=icon]:hidden">Logout</span>
-              </Button>
-            </Link>
-          </SidebarFooter>
-        </Sidebar>
-        <div className="flex flex-1 flex-col">
-          <Header navLinks={navLinks} />
-          <SidebarInset>
-            <main className="flex-1 p-4 sm:p-6">{children}</main>
-          </SidebarInset>
+    <LanguageProvider>
+      <SidebarProvider>
+        <div className="flex min-h-screen w-full">
+          <Sidebar>
+            <SidebarHeader>
+              <Logo />
+            </SidebarHeader>
+            <SidebarContent>
+              <SidebarMenu>
+                {navLinks.map((link, index) => (
+                  <SidebarMenuItem key={`${link.href}-${index}`}>
+                    <Link href={link.href}>
+                      <SidebarMenuButton
+                        isActive={pathname === link.href}
+                        tooltip={link.label}
+                      >
+                        {link.icon}
+                        <span>{link.label}</span>
+                      </SidebarMenuButton>
+                    </Link>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarContent>
+            <SidebarFooter>
+              <Link href="/login">
+                <Button variant="ghost" className="w-full justify-start gap-2">
+                  <LogOut size={16} />
+                  <span className="group-data-[collapsible=icon]:hidden">Logout</span>
+                </Button>
+              </Link>
+            </SidebarFooter>
+          </Sidebar>
+          <div className="flex flex-1 flex-col">
+            <Header navLinks={navLinks} />
+            <SidebarInset>
+              <main className="flex-1 p-4 sm:p-6">{children}</main>
+            </SidebarInset>
+          </div>
         </div>
-      </div>
-    </SidebarProvider>
+      </SidebarProvider>
+    </LanguageProvider>
   );
 }
