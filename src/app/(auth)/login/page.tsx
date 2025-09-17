@@ -3,10 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {
-  Card,
-  CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
@@ -15,9 +12,9 @@ import { Label } from '@/components/ui/label';
 import { useState, useTransition } from 'react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Loader2 } from 'lucide-react';
-import { verifyAdmin } from '@/ai/flows/admin-verification';
-import { verifyOfficial } from '@/ai/flows/official-verification';
-import { verifyVoterLogin } from '../voter-actions';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth, db } from '@/lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
 import { useTranslation } from '@/hooks/use-translation';
@@ -36,43 +33,48 @@ export default function LoginPage() {
     const password = formData.get('password') as string;
 
     startTransition(async () => {
-      // Role is determined by email/password combo, checking in order of privilege
-      
-      // 1. Admin check
-      const adminResult = await verifyAdmin({ email, password });
-      if (adminResult.isAuthenticated) {
-        localStorage.setItem('userRole', 'admin');
-        router.push('/admin');
-        return;
-      }
-      
-      // 2. Official check
-      const officialResult = await verifyOfficial({ email, password });
-      if (officialResult.isAuthenticated) {
-        localStorage.setItem('userRole', 'official');
-        router.push('/official/cast-vote');
-        return;
-      }
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
 
-      // 3. Voter check
-      const voterResult = await verifyVoterLogin({ email, password });
-      if (voterResult.isAuthenticated) {
-         if (voterResult.status === 'approved') {
-            localStorage.setItem('userRole', 'voter');
-            localStorage.setItem('voterName', voterResult.name || '');
-            router.push('/dashboard');
-            return;
-         } else if (voterResult.status === 'pending') {
-            setError(t('login.error.pending'));
-            return;
-         } else {
-            setError(t('login.error.rejected'));
-            return;
-         }
+        // Fetch user role from Firestore
+        const userDocRef = doc(db, 'users', user.uid);
+        const userDoc = await getDoc(userDocRef);
+
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          const role = userData.role;
+          const status = userData.status;
+          
+          localStorage.setItem('userRole', role);
+
+          if (role === 'admin') {
+            router.push('/admin');
+          } else if (role === 'official') {
+            router.push('/official/cast-vote');
+          } else if (role === 'voter') {
+             if (status === 'approved') {
+                localStorage.setItem('voterName', userData.fullName || '');
+                router.push('/dashboard');
+             } else if (status === 'pending') {
+                setError(t('login.error.pending'));
+             } else {
+                setError(t('login.error.rejected'));
+             }
+          } else {
+             setError(t('login.error.invalid'));
+          }
+        } else {
+          // This case should ideally not happen if registration is handled correctly
+          setError(t('login.error.no_role'));
+        }
+      } catch (err: any) {
+        if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
+          setError(t('login.error.invalid'));
+        } else {
+          setError(err.message);
+        }
       }
-      
-      // If no role matches
-      setError(t('login.error.invalid'));
     });
   };
 

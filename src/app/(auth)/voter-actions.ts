@@ -1,124 +1,109 @@
 'use server';
 
 import type { Voter } from '@/lib/types';
-import fs from 'fs';
-import path from 'path';
 import { revalidatePath } from 'next/cache';
-import { verifyUser } from '@/ai/flows/user-verification';
-
-
-const dbPath = path.resolve(process.cwd(), 'src/lib/mock-voters.json');
-
-// --- Helper Functions ---
-function readVoters(): Voter[] {
-  try {
-    if (fs.existsSync(dbPath)) {
-      const data = fs.readFileSync(dbPath, 'utf-8');
-      return JSON.parse(data);
-    }
-    fs.writeFileSync(dbPath, JSON.stringify([], null, 2));
-    return [];
-  } catch (error) {
-    console.error("Error reading voters file:", error);
-    return [];
-  }
-}
-
-function writeVoters(voters: Voter[]): void {
-  try {
-    fs.writeFileSync(dbPath, JSON.stringify(voters, null, 2));
-  } catch (error) {
-    console.error("Error writing voters file:", error);
-  }
-}
-
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc, getDoc, getDocs, collection, updateDoc, deleteDoc } from 'firebase/firestore';
+import { auth, db } from '@/lib/firebase';
 
 // --- Public Actions ---
 
 // Called from the voter registration page
 export async function handleVoterRegistration(voterData: Omit<Voter, 'id' | 'status'> & { firstName: string; lastName: string }) {
-    
-    const voters = readVoters();
-    
-    // Check for duplicates in our local voter database
-    if (voters.some(v => v.email === voterData.email || v.nationalId === voterData.nationalId)) {
-        return { success: false, error: 'A user with this email or National ID is already registered or pending approval.' };
-    }
+    try {
+        // Step 1: Create the user in Firebase Authentication
+        const userCredential = await createUserWithEmailAndPassword(auth, voterData.email, voterData.password!);
+        const user = userCredential.user;
 
-    // If all checks pass, create the pending registration
-    const newVoter: Voter = {
-        fullName: voterData.fullName,
-        nationalId: voterData.nationalId,
-        email: voterData.email,
-        password: voterData.password,
-        id: `voter-${Date.now()}`,
-        status: 'pending',
-    };
-
-    voters.push(newVoter);
-    writeVoters(voters);
-
-    revalidatePath('/admin/manage-voters');
-
-    return { success: true };
-}
-
-// Called from the login page
-export async function verifyVoterLogin(credentials: {email: string; password: string}) {
-    const voters = readVoters();
-    const voter = voters.find(v => v.email === credentials.email && v.password === credentials.password);
-
-    if (voter) {
-        return {
-            isAuthenticated: true,
-            status: voter.status,
-            name: voter.fullName
+        // Step 2: Create the user document in Firestore with 'pending' status
+        const voterDoc: Omit<Voter, 'password'> = {
+            id: user.uid,
+            fullName: voterData.fullName,
+            nationalId: voterData.nationalId,
+            email: voterData.email,
+            status: 'pending',
+            role: 'voter' // Assign role
         };
-    }
 
-    return { isAuthenticated: false };
+        await setDoc(doc(db, 'users', user.uid), voterDoc);
+
+        revalidatePath('/admin/manage-voters');
+
+        return { success: true };
+    } catch (error: any) {
+        let errorMessage = 'An unexpected error occurred.';
+        if (error.code === 'auth/email-already-in-use') {
+            errorMessage = 'This email address is already registered.';
+        }
+        console.error("Voter registration error:", error);
+        return { success: false, error: errorMessage };
+    }
 }
+
 
 // --- Admin Actions ---
 
 // Called from the admin/manage-voters page
 export async function getVoters(): Promise<Voter[]> {
-    return readVoters();
+    try {
+        const usersCollection = collection(db, 'users');
+        const querySnapshot = await getDocs(usersCollection);
+        const voters: Voter[] = [];
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            // We only care about users with the 'voter' role here
+            if (data.role === 'voter') {
+                 voters.push({
+                    id: doc.id,
+                    fullName: data.fullName,
+                    nationalId: data.nationalId,
+                    email: data.email,
+                    status: data.status,
+                    role: data.role
+                });
+            }
+        });
+        return voters;
+    } catch (error) {
+        console.error("Error fetching voters:", error);
+        return [];
+    }
 }
 
 // Called from the admin/manage-voters page
 export async function updateVoterStatus(voterId: string, newStatus: 'approved' | 'rejected') {
-    const voters = readVoters();
-    const voterIndex = voters.findIndex(v => v.id === voterId);
+    try {
+        const voterDocRef = doc(db, 'users', voterId);
+        await updateDoc(voterDocRef, {
+            status: newStatus
+        });
 
-    if (voterIndex === -1) {
-        return { success: false, error: 'Voter not found.' };
+        revalidatePath('/admin/manage-voters');
+        return { success: true };
+    } catch (error) {
+        console.error("Error updating voter status:", error);
+        return { success: false, error: 'Failed to update voter status.' };
     }
-
-    voters[voterIndex].status = newStatus;
-
-    if (newStatus === 'approved') {
-        // Simulate sending a confirmation email
-        console.log(`Simulating: Sending approval confirmation email to ${voters[voterIndex].email}`);
-    }
-
-    writeVoters(voters);
-
-    revalidatePath('/admin/manage-voters');
-    return { success: true };
 }
 
 // Called from the admin/manage-voters page
 export async function removeVoter(voterId: string) {
-    let voters = readVoters();
-    const initialLength = voters.length;
-    voters = voters.filter(v => v.id !== voterId);
+     try {
+        // This is a complex operation. In a real app, you would not delete the user from Auth
+        // immediately. You would disable them. For this prototype, we'll just delete from Firestore.
+        await deleteDoc(doc(db, 'users', voterId));
 
-    if (voters.length === initialLength) {
-        return { success: false, error: 'Voter not found.' };
+        // You would also need an admin SDK to delete the user from Firebase Auth.
+        // This cannot be done from the client-side/server-action securely.
+        // e.g., admin.auth().deleteUser(voterId);
+
+        revalidatePath('/admin/manage-voters');
+        return { success: true };
+    } catch (error) {
+        console.error("Error removing voter:", error);
+        return { success: false, error: 'Failed to remove voter from the database.' };
     }
-  
-    writeVoters(voters);
-revalidatePath('/admin/manage-voters');
-    return { success: true };
 }
+
+// This function is no longer needed as login is handled on the client with Firebase Auth
+// export async function verifyVoterLogin(credentials: {email: string; password: string}) {}

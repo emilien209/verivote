@@ -17,10 +17,51 @@
       "title": "Échec de la connexion",
       "pending": "Votre inscription est toujours en attente d'approbation. Veuillez revenir plus tard.",
       "rejected": "Votre inscription a été rejetée. Veuillez contacter un administrateur pour obtenir de l'aide.",
-      "invalid": "Identifiants invalides ou inscription non approuvée. Veuillez vérifier votre e-mail et votre mot de passe."
+      "invalid": "Identifiants invalides. Veuillez vérifier votre e-mail et votre mot de passe.",
+      "no_role": "Votre compte utilisateur n'est pas configuré correctement. Veuillez contacter le support."
     },
-    "admin_official_info": "Êtes-vous un administrateur ou un officiel ? Vos identifiants vous donneront accès.",
+    "admin_official_info": "Les administrateurs et les officiels utilisent leurs identifiants attribués pour se connecter.",
     "no_account": "Vous n'avez pas de compte électeur ?",
     "register_button": "S'inscrire pour voter"
+  },
+  "register": {
+    "title": "Inscription des électeurs",
+    "description": "Saisissez vos informations pour créer un compte.",
+    "form": {
+      "firstName": {
+        "label": "Prénom",
+        "placeholder": "Jean"
+      },
+      "lastName": {
+        "label": "Nom de famille",
+        "placeholder": "Dupont"
+      },
+      "nationalId": {
+        "label": "Carte d'identité nationale",
+        "placeholder": "1234567890123456"
+      },
+      "email": {
+        "label": "E-mail",
+        "placeholder": "nom@example.com"
+      },
+      "password": {
+        "label": "Mot de passe"
+      },
+      "confirmPassword": {
+        "label": "Confirmez le mot de passe"
+      },
+      "submit": "S'inscrire"
+    },
+    "error": {
+      "title": "Échec de l'inscription",
+      "password_mismatch": "Les mots de passe ne correspondent pas."
+    },
+    "success": {
+      "title": "Inscription soumise !",
+      "description": "Votre inscription est en attente d'approbation. Vous pourrez vous connecter une fois qu'un administrateur aura approuvé votre compte.",
+      "button": "Retour à la connexion"
+    },
+    "have_account": "Vous avez déjà un compte ?",
+    "login_button": "Se connecter"
   }
 }

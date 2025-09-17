@@ -17,10 +17,51 @@
       "title": "Login Failed",
       "pending": "Your registration is still pending approval. Please check back later.",
       "rejected": "Your registration has been rejected. Please contact an administrator for assistance.",
-      "invalid": "Invalid credentials or registration not approved. Please check your email and password."
+      "invalid": "Invalid credentials. Please check your email and password.",
+      "no_role": "Your user account is not configured correctly. Please contact support."
     },
-    "admin_official_info": "Are you an admin or official? Your credentials will grant you access.",
+    "admin_official_info": "Admins and officials use their assigned credentials to sign in.",
     "no_account": "Don't have a voter account?",
     "register_button": "Register to Vote"
+  },
+  "register": {
+    "title": "Voter Registration",
+    "description": "Enter your information to create an account.",
+    "form": {
+      "firstName": {
+        "label": "First Name",
+        "placeholder": "John"
+      },
+      "lastName": {
+        "label": "Last Name",
+        "placeholder": "Doe"
+      },
+      "nationalId": {
+        "label": "National ID",
+        "placeholder": "1234567890123456"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "name@example.com"
+      },
+      "password": {
+        "label": "Password"
+      },
+      "confirmPassword": {
+        "label": "Confirm Password"
+      },
+      "submit": "Register"
+    },
+    "error": {
+      "title": "Registration Failed",
+      "password_mismatch": "Passwords do not match."
+    },
+    "success": {
+      "title": "Registration Submitted!",
+      "description": "Your registration is pending approval. You will be able to log in once an administrator has approved your account.",
+      "button": "Back to Login"
+    },
+    "have_account": "Already have an account?",
+    "login_button": "Login"
   }
 }

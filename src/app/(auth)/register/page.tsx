@@ -15,12 +15,15 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { handleVoterRegistration } from '../voter-actions';
+import { useTranslation } from '@/hooks/use-translation';
 
 export default function RegisterPage() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
+  const { t } = useTranslation();
+
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -55,25 +58,25 @@ export default function RegisterPage() {
   return (
     <>
       <CardHeader className="text-center p-0">
-        <CardTitle className="text-3xl font-bold">Voter Registration</CardTitle>
+        <CardTitle className="text-3xl font-bold">{t('register.title')}</CardTitle>
         <CardDescription>
-          Enter your information to create an account.
+          {t('register.description')}
         </CardDescription>
       </CardHeader>
 
       {error && (
           <Alert variant="destructive" className="mb-4 text-left">
-          <AlertTitle>Registration Failed</AlertTitle>
+          <AlertTitle>{t('register.error.title')}</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
           </Alert>
       )}
       {success ? (
         <Alert>
-          <AlertTitle>Registration Submitted!</AlertTitle>
+          <AlertTitle>{t('register.success.title')}</AlertTitle>
           <AlertDescription>
-            Your registration is pending approval. You will be able to log in once an administrator has approved your account.
+            {t('register.success.description')}
             <Button asChild className="mt-4 w-full">
-              <Link href="/login">Back to Login</Link>
+              <Link href="/login">{t('register.success.button')}</Link>
             </Button>
           </AlertDescription>
         </Alert>
@@ -81,41 +84,41 @@ export default function RegisterPage() {
         <form onSubmit={handleSubmit} className="grid gap-4">
           <div className="grid grid-cols-2 gap-4 text-left">
             <div className="grid gap-2">
-              <Label htmlFor="firstName">First Name</Label>
-              <Input id="firstName" name="firstName" placeholder="John" required disabled={isPending} />
+              <Label htmlFor="firstName">{t('register.form.firstName.label')}</Label>
+              <Input id="firstName" name="firstName" placeholder={t('register.form.firstName.placeholder')} required disabled={isPending} />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="lastName">Last Name</Label>
-              <Input id="lastName" name="lastName" placeholder="Doe" required disabled={isPending} />
+              <Label htmlFor="lastName">{t('register.form.lastName.label')}</Label>
+              <Input id="lastName" name="lastName" placeholder={t('register.form.lastName.placeholder')} required disabled={isPending} />
             </div>
           </div>
           <div className="grid gap-2 text-left">
-            <Label htmlFor="nationalId">National ID</Label>
-            <Input id="nationalId" name="nationalId" placeholder="1234567890123456" required disabled={isPending} />
+            <Label htmlFor="nationalId">{t('register.form.nationalId.label')}</Label>
+            <Input id="nationalId" name="nationalId" placeholder={t('register.form.nationalId.placeholder')} required disabled={isPending} />
           </div>
           <div className="grid gap-2 text-left">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" name="email" type="email" placeholder="name@example.com" required disabled={isPending} />
+            <Label htmlFor="email">{t('register.form.email.label')}</Label>
+            <Input id="email" name="email" type="email" placeholder={t('register.form.email.placeholder')} required disabled={isPending} />
           </div>
           <div className="grid gap-2 text-left">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">{t('register.form.password.label')}</Label>
             <Input id="password" name="password" type="password" required disabled={isPending} />
           </div>
           <div className="grid gap-2 text-left">
-            <Label htmlFor="confirmPassword">Confirm Password</Label>
+            <Label htmlFor="confirmPassword">{t('register.form.confirmPassword.label')}</Label>
             <Input id="confirmPassword" name="confirmPassword" type="password" required disabled={isPending} />
           </div>
           <Button type="submit" className="w-full" disabled={isPending}>
             {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Register
+            {t('register.form.submit')}
           </Button>
         </form>
       )}
       
       <div className="mt-4 text-center text-sm">
-        Already have an account?{' '}
+        {t('register.have_account')}{' '}
         <Link href="/login" className="underline">
-            Login
+            {t('register.login_button')}
         </Link>
       </div>
     </>

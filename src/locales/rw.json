@@ -17,10 +17,51 @@
       "title": "Kwinjira Byanze",
       "pending": "Kwiyandikisha kwawe kuracyategereje kwemezwa. Nyamuneka, ongera ugerageze nyuma.",
       "rejected": "Kwiyandikisha kwawe kwaranze. Nyamuneka, vugana n'umuyobozi kugirango agufashe.",
-      "invalid": "Amakuru y'injira atariyo cyangwa kwiyandikisha kutaremezwa. Nyamuneka, reba imeyili yawe n'ijambobanga."
+      "invalid": "Amakuru y'injira atariyo. Nyamuneka, reba imeyili yawe n'ijambobanga.",
+      "no_role": "Konti yawe y'umukoresha ntabwo yashyizweho neza. Nyamuneka, vugana n'abashinzwe ubufasha."
     },
-    "admin_official_info": "Uri umuyobozi cyangwa umukozi? Amakuru yawe y'injira azaguha uburenganzira.",
+    "admin_official_info": "Abayobozi n'abakozi bakoresha amakuru yabo bahawe kugirango binjire.",
     "no_account": "Nta konti y'umutora ufite?",
     "register_button": "Iyandikishe gutora"
+  },
+  "register": {
+    "title": "Kwiyandikisha kw'Abatora",
+    "description": "Shyiramo amakuru yawe kugirango ufungure konti.",
+    "form": {
+      "firstName": {
+        "label": "Izina ry'umuryango",
+        "placeholder": "Mutangana"
+      },
+      "lastName": {
+        "label": "Izina bwite",
+        "placeholder": "Jean"
+      },
+      "nationalId": {
+        "label": "Numero y'Indangamuntu",
+        "placeholder": "1234567890123456"
+      },
+      "email": {
+        "label": "Imeyili",
+        "placeholder": "izina@urugero.com"
+      },
+      "password": {
+        "label": "Ijambobanga"
+      },
+      "confirmPassword": {
+        "label": "Emeza Ijambobanga"
+      },
+      "submit": "Iyandikishe"
+    },
+    "error": {
+      "title": "Kwiyandikisha Byanze",
+      "password_mismatch": "Amagambo banga ntabwo ahuye."
+    },
+    "success": {
+      "title": "Kwiyandikisha Byoherejwe!",
+      "description": "Kwiyandikisha kwawe gutegereje kwemezwa. Uzashobora kwinjira iyo umuyobozi amaze kwemeza konti yawe.",
+      "button": "Subira kuri Kwinjira"
+    },
+    "have_account": "Usanzwe ufite konti?",
+    "login_button": "Injira"
   }
 }

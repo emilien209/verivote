@@ -27,8 +27,8 @@ export default async function ManageVotersPage() {
         </p>
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-2">
-        <Card className="lg:col-span-2">
+      <div className="grid gap-8 lg:grid-cols-1">
+        <Card>
            <CardHeader>
             <CardTitle>Pending Registrations</CardTitle>
             <CardDescription>Review and act on new voter registrations.</CardDescription>

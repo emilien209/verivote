@@ -23,11 +23,14 @@ export type Official = {
   email: string;
 };
 
+export type UserRole = 'voter' | 'official' | 'admin';
+
 export type Voter = {
-  id: string;
+  id: string; // This will be the Firebase Auth UID
   fullName: string;
   nationalId: string;
   email: string;
-  password?: string; // Password should not be sent to client
+  password?: string; // Only used during registration, not stored in Firestore
   status: 'pending' | 'approved' | 'rejected';
+  role: UserRole;
 }
