@@ -16,7 +16,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { verifyUser } from '@/ai/flows/user-verification';
 import { VoteClient } from '@/app/(app)/elections/[id]/vote-client';
 import type { Candidate } from '@/lib/types';
-import { getCandidates } from '@/app/(app)/candidates/actions';
+import { getCandidates } from '@/app/(app)/candidates/candidate-actions';
 
 enum VoterState {
   IDLE,

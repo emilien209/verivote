@@ -1,5 +1,5 @@
 import { CandidateSummary } from './candidate-summary';
-import { getCandidates } from './actions';
+import { getCandidates } from './candidate-actions';
 
 export const revalidate = 0; // Ensure this page is always dynamic
 

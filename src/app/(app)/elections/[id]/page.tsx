@@ -1,7 +1,7 @@
 import type { Election, Candidate } from '@/lib/types';
 import { notFound } from 'next/navigation';
 import { VoteClient } from './vote-client';
-import { getCandidates } from '@/app/(app)/candidates/actions';
+import { getCandidates } from '@/app/(app)/candidates/candidate-actions';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 async function getElectionData(id: string): Promise<Election | null> {

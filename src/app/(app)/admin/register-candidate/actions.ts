@@ -1,4 +1,3 @@
-
 'use server';
 
 import { revalidatePath } from 'next/cache';
@@ -30,7 +29,6 @@ function writeCandidates(candidates: Candidate[]): void {
   }
 }
 
-// This is a mock function. In a real app, you would save to a database.
 async function addCandidateToDb(candidate: Omit<Candidate, 'id'>) {
   const candidates = readCandidates();
   const newId = `c${Date.now()}`;
@@ -49,6 +47,31 @@ export async function addCandidate(candidate: { name: string, party: string, pla
       return { success: true };
     }
     return { success: false, error: 'Failed to save candidate.' };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: 'An unexpected error occurred.' };
+  }
+}
+
+async function removeCandidateFromDb(candidateId: string) {
+  const candidates = readCandidates();
+  const updatedCandidates = candidates.filter(c => c.id !== candidateId);
+  if (candidates.length === updatedCandidates.length) {
+    return { success: false, error: 'Candidate not found.' };
+  }
+  writeCandidates(updatedCandidates);
+  return { success: true };
+}
+
+
+export async function removeCandidate(candidateId: string) {
+  try {
+    const result = await removeCandidateFromDb(candidateId);
+    if (result.success) {
+      revalidatePath('/candidates');
+      return { success: true };
+    }
+    return { success: false, error: result.error || 'Failed to remove candidate.' };
   } catch (error) {
     console.error(error);
     return { success: false, error: 'An unexpected error occurred.' };
