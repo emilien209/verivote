@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/sidebar';
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
-import { LogOut, Shield, UserRoundPlus, UserCog, Vote, Users, Home, UserCheck, MessageSquareQuestion, BookOpenCheck } from 'lucide-react';
+import { LogOut, Shield, UserRoundPlus, UserCog, Vote, Users, Home, UserCheck, CircleHelp, BookOpenCheck } from 'lucide-react';
 import { Header } from './header';
 import { useState, useEffect } from 'react';
 
@@ -34,11 +34,11 @@ const allNavLinks = [
     { href: '/candidates', label: 'Candidates', icon: <Users size={20} />, role: 'official' },
     { href: '/candidates', label: 'Candidates', icon: <Users size={20} />, role: 'voter' },
     { href: '/guide', label: 'AI Guide', icon: <BookOpenCheck size={20} />, role: 'voter' },
-    { href: '/faq', label: 'FAQ Bot', icon: <MessageSquareQuestion size={20} />, role: 'voter' },
+    { href: '/faq', label: 'FAQ Bot', icon: <CircleHelp size={20} />, role: 'voter' },
     { href: '/guide', label: 'AI Guide', icon: <BookOpenCheck size={20} />, role: 'official' },
-    { href: '/faq', label: 'FAQ Bot', icon: <MessageSquareQuestion size={20} />, role: 'official' },
+    { href: '/faq', label: 'FAQ Bot', icon: <CircleHelp size={20} />, role: 'official' },
     { href: '/guide', label: 'AI Guide', icon: <BookOpenCheck size={20} />, role: 'admin' },
-    { href: '/faq', label: 'FAQ Bot', icon: <MessageSquareQuestion size={20} />, role: 'admin' },
+    { href: '/faq', label: 'FAQ Bot', icon: <CircleHelp size={20} />, role: 'admin' },
 ];
 
 export function AppLayout({
@@ -47,30 +47,27 @@ export function AppLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const [navLinks, setNavLinks] = useState(allNavLinks.filter(l => l.role === 'voter'));
+  const [navLinks, setNavLinks] = useState<typeof allNavLinks>([]);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
-  }, []);
+    // This code now runs only on the client
+    const userRole = localStorage.getItem('userRole') || 'voter';
+    const relevantLinks = allNavLinks.filter(link => link.role === userRole);
+    
+    // Remove duplicate links (e.g. Candidates for admin/official)
+    const uniqueLinks = relevantLinks.filter((link, index, self) =>
+      index === self.findIndex((l) => (
+        l.href === link.href && l.label === link.label
+      ))
+    );
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const userRole = localStorage.getItem('userRole') || 'voter';
-      const relevantLinks = allNavLinks.filter(link => link.role === userRole);
-      
-      // Remove duplicate links (e.g. Candidates for admin/official)
-      const uniqueLinks = relevantLinks.filter((link, index, self) =>
-        index === self.findIndex((l) => (
-          l.href === link.href && l.label === link.label
-        ))
-      );
-
-      setNavLinks(uniqueLinks);
-    }
+    setNavLinks(uniqueLinks);
   }, [pathname]);
 
   if (!isClient) {
+    // Render nothing or a loading spinner on the server
     return null;
   }
 
