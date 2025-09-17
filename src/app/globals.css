@@ -4,72 +4,72 @@
 
 @layer base {
   :root {
-    --background: 195 20% 95%;
-    --foreground: 215 28% 18%;
+    --background: 210 20% 98%; /* Light grey-blue for a clean, neutral backdrop */
+    --foreground: 222 47% 11%;
     --card: 0 0% 100%;
-    --card-foreground: 215 28% 18%;
+    --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
-    --popover-foreground: 215 28% 18%;
-    --primary: 189 44% 65%;
-    --primary-foreground: 215 28% 12%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 209 72% 41%; /* Blue from Rwandan flag */
+    --primary-foreground: 0 0% 100%;
     --secondary: 0 0% 96.1%;
     --secondary-foreground: 0 0% 9%;
     --muted: 0 0% 96.1%;
     --muted-foreground: 0 0% 45.1%;
-    --accent: 148 38% 74%;
-    --accent-foreground: 215 28% 12%;
+    --accent: 118 50% 40%; /* Green from Rwandan flag */
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 89.8%;
     --input: 0 0% 89.8%;
-    --ring: 189 44% 65%;
+    --ring: 209 72% 41%;
     --radius: 0.5rem;
-    --chart-1: 189 44% 65%;
-    --chart-2: 148 38% 74%;
-    --chart-3: 215 28% 18%;
-    --chart-4: 43 74% 66%;
+    --chart-1: 209 72% 41%;
+    --chart-2: 118 50% 40%;
+    --chart-3: 45 100% 50%; /* Yellow from Rwandan flag */
+    --chart-4: 215 28% 18%;
     --chart-5: 27 87% 67%;
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 215 28% 18%;
-    --sidebar-primary: 189 44% 65%;
-    --sidebar-primary-foreground: 215 28% 12%;
-    --sidebar-accent: 195 20% 95%;
-    --sidebar-accent-foreground: 215 28% 18%;
+    --sidebar-primary: 209 72% 41%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 20% 98%;
+    --sidebar-accent-foreground: 222 47% 11%;
     --sidebar-border: 0 0% 89.8%;
-    --sidebar-ring: 189 44% 65%;
+    --sidebar-ring: 209 72% 41%;
   }
 
   .dark {
-    --background: 215 28% 12%;
-    --foreground: 195 20% 95%;
-    --card: 215 28% 15%;
-    --card-foreground: 195 20% 95%;
-    --popover: 215 28% 12%;
-    --popover-foreground: 195 20% 95%;
-    --primary: 189 44% 65%;
-    --primary-foreground: 215 28% 12%;
+    --background: 222 47% 11%;
+    --foreground: 210 20% 98%;
+    --card: 222 47% 14%;
+    --card-foreground: 210 20% 98%;
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 20% 98%;
+    --primary: 209 72% 51%; /* Brighter Blue for dark mode */
+    --primary-foreground: 0 0% 100%;
     --secondary: 0 0% 14.9%;
     --secondary-foreground: 0 0% 98%;
     --muted: 0 0% 14.9%;
     --muted-foreground: 0 0% 63.9%;
-    --accent: 148 38% 74%;
-    --accent-foreground: 215 28% 12%;
+    --accent: 118 50% 50%; /* Brighter Green for dark mode */
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 20%;
     --input: 0 0% 20%;
-    --ring: 189 44% 65%;
-    --chart-1: 189 44% 65%;
-    --chart-2: 148 38% 74%;
-    --chart-3: 195 20% 95%;
-    --sidebar-background: 215 28% 15%;
-    --sidebar-foreground: 195 20% 95%;
-    --sidebar-primary: 189 44% 65%;
-    --sidebar-primary-foreground: 215 28% 12%;
-    --sidebar-accent: 215 28% 20%;
-    --sidebar-accent-foreground: 195 20% 95%;
+    --ring: 209 72% 51%;
+    --chart-1: 209 72% 51%;
+    --chart-2: 118 50% 50%;
+    --chart-3: 45 100% 60%; /* Brighter Yellow for dark mode */
+    --sidebar-background: 222 47% 14%;
+    --sidebar-foreground: 210 20% 98%;
+    --sidebar-primary: 209 72% 51%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 222 47% 18%;
+    --sidebar-accent-foreground: 210 20% 98%;
     --sidebar-border: 0 0% 20%;
-    --sidebar-ring: 189 44% 65%;
+    --sidebar-ring: 209 72% 51%;
   }
 }
 
