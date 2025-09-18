@@ -34,7 +34,7 @@ const verifyAdminFlow = ai.defineFlow(
     outputSchema: VerifyAdminOutputSchema,
   },
   async (input) => {
-    const admin = MOCK_ADMINS.find(a => a.email === input.email && a.password === input.password);
+    const admin = MOCK_ADMINS.find(a => a.email.toLowerCase() === input.email.toLowerCase() && a.password === input.password);
 
     if (admin) {
       return {
