@@ -24,7 +24,7 @@ export default function AuthLayout({
         </main>
         <div className="hidden bg-muted lg:block">
           <Image
-            src="https://images.unsplash.com/photo-1554232456-8727a67f2b54?q=80&w=1974&auto=format&fit=crop"
+            src="https://i.pinimg.com/736x/0e/61/6b/0e616b0cecf762bf5d1481f09f5fa808.jpg"
             alt="Abstract background"
             width="1920"
             height="1080"
