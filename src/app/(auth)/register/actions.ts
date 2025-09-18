@@ -17,13 +17,11 @@ export async function handleVoterPhotoRegistration(
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
     const idPhotoDataUri = formData.get('idPhoto') as string;
-    const locationPhotoDataUri = formData.get('locationPhoto') as string;
 
     try {
         // Step 1: Use AI to verify photos and extract info
         const verificationResult = await verifyUserByPhoto({
             idPhotoDataUri,
-            locationPhotoDataUri,
         });
 
         if (!verificationResult.isVerified) {
@@ -41,7 +39,6 @@ export async function handleVoterPhotoRegistration(
             nationalId: verificationResult.extractedNationalId,
             email: email,
             idPhotoUrl: 'simulated_url/id_photo.jpg', // In a real app, you'd store the photo in Cloud Storage and save the URL
-            locationPhotoUrl: 'simulated_url/location_photo.jpg',
             status: 'approved', // Auto-approved after AI verification
             role: 'voter',
         };

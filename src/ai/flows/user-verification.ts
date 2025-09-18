@@ -91,7 +91,6 @@ const verifyUserFlow = ai.defineFlow(
 
 const VerifyUserByPhotoInputSchema = z.object({
     idPhotoDataUri: z.string().describe("A data URI of the user's ID card photo."),
-    locationPhotoDataUri: z.string().describe("A data URI of the user's proof of voting location photo.")
 });
 export type VerifyUserByPhotoInput = z.infer<typeof VerifyUserByPhotoInputSchema>;
 
@@ -112,17 +111,15 @@ const verifyUserByPhotoPrompt = ai.definePrompt({
     name: 'verifyUserByPhotoPrompt',
     input: { schema: VerifyUserByPhotoInputSchema },
     output: { schema: VerifyUserByPhotoOutputSchema },
-    prompt: `You are an AI verification agent. Your task is to analyze the provided ID card and proof of location photos.
+    prompt: `You are an AI verification agent. Your task is to analyze the provided ID card photo.
     
     ID Photo: {{media url=idPhotoDataUri}}
-    Location Photo: {{media url=locationPhotoDataUri}}
 
     1.  Analyze the ID photo to determine if it is a valid government-issued ID.
     2.  Extract the National ID number and the Full Name from the ID.
-    3.  Analyze the location photo to ensure it's a valid place of voting.
-    4.  Based on your analysis, decide if the user is verified.
+    3.  Based on your analysis, decide if the user is verified.
     
-    For this prototype, assume the photos are always valid and extract mock data.`
+    For this prototype, assume the photo is always valid and extract mock data.`
 });
 
 
@@ -135,7 +132,7 @@ const verifyUserByPhotoFlow = ai.defineFlow(
     async (input) => {
         // In a real application, you would use a multimodal model to analyze the images.
         // For this prototype, we'll just simulate a successful verification.
-        console.log("Simulating AI analysis of ID and location photos.");
+        console.log("Simulating AI analysis of ID photo.");
         
         // For now, let's return mock data.
         return {

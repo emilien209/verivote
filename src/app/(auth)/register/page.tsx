@@ -30,8 +30,6 @@ function SubmitButton({ children, formAction }: { children: React.ReactNode, for
 function PhotoRegistrationForm() {
   const [state, formAction] = useActionState(handleVoterPhotoRegistration, { success: false });
   const [idPhotoPreview, setIdPhotoPreview] = useState<string | null>(null);
-  const [locationPhotoPreview, setLocationPhotoPreview] = useState<string | null>(null);
-  const router = useRouter();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, setPreview: (url: string | null) => void) => {
     const file = e.target.files?.[0];
@@ -51,7 +49,7 @@ function PhotoRegistrationForm() {
         <Alert>
             <AlertTitle>Registration Successful!</AlertTitle>
             <AlertDescription>
-            {state.message} Your account has been created and approved.
+            {state.message}
             <Button asChild className="mt-4 w-full">
                 <Link href="/login">Proceed to Login</Link>
             </Button>
@@ -81,12 +79,6 @@ function PhotoRegistrationForm() {
         <Input id="idPhoto" name="idPhoto" type="file" accept="image/*" required 
           onChange={(e) => handleFileChange(e, setIdPhotoPreview)} />
         {idPhotoPreview && <img src={idPhotoPreview} alt="ID Preview" className="mt-2 h-24 w-auto rounded-md border" />}
-      </div>
-      <div className="grid gap-2">
-        <Label htmlFor="locationPhoto">Upload Proof of Voting Location</Label>
-        <Input id="locationPhoto" name="locationPhoto" type="file" accept="image/*" required 
-           onChange={(e) => handleFileChange(e, setLocationPhotoPreview)} />
-        {locationPhotoPreview && <img src={locationPhotoPreview} alt="Location Preview" className="mt-2 h-24 w-auto rounded-md border" />}
       </div>
       <SubmitButton>Register with Photos</SubmitButton>
     </form>
@@ -183,8 +175,8 @@ export default function RegisterPage() {
               <RadioGroupItem value="photo" id="r1" className="peer sr-only" />
               <Label htmlFor="r1" className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
                 <Camera className="mb-3 h-6 w-6" />
-                Register with ID Photos
-                <span className="text-xs text-muted-foreground mt-1 text-center">For voters in designated areas. Requires uploading a government ID and proof of location.</span>
+                Register with ID Photo
+                <span className="text-xs text-muted-foreground mt-1 text-center">For voters in designated areas. Requires uploading a government ID.</span>
               </Label>
             </div>
             <div>

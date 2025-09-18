@@ -35,5 +35,4 @@ export type Voter = {
   password?: string; // Only used during registration, not stored in Firestore
   phone?: string;
   idPhotoUrl?: string;
-  locationPhotoUrl?: string;
 }
