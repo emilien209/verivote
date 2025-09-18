@@ -1,4 +1,5 @@
 import { LanguageProvider } from '@/contexts/language-context';
+import Image from 'next/image';
 
 export default function AuthLayout({
   children,
@@ -16,7 +17,10 @@ export default function AuthLayout({
             </div>
           </div>
         </main>
-        <div className="hidden bg-muted lg:block bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 opacity-75">
+        <div 
+          className="hidden bg-muted lg:block bg-cover bg-center"
+          style={{ backgroundImage: "url('https://i.pinimg.com/736x/0e/61/6b/0e616b0cecf762bf5d1481f09f5fa808.jpg')" }}
+        >
           {/* This div is now the background, no image needed */}
         </div>
       </div>
