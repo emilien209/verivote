@@ -3,7 +3,6 @@ export type Candidate = {
   name: string;
   party: string;
   platform: string;
-  imageUrl: string;
 };
 
 export type Election = {
@@ -14,7 +13,6 @@ export type Election = {
   endDate: string;
   status: 'Ongoing' | 'Upcoming' | 'Completed';
   candidates: Candidate[];
-  imageUrl: string;
 };
 
 export type Official = {

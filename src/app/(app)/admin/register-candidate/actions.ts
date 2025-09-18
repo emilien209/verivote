@@ -38,7 +38,7 @@ async function addCandidateToDb(candidate: Omit<Candidate, 'id'>) {
   return { success: true };
 }
 
-export async function addCandidate(candidate: { name: string, party: string, platform: string, imageUrl: string }) {
+export async function addCandidate(candidate: { name: string, party: string, platform: string }) {
   try {
     const result = await addCandidateToDb(candidate);
     if (result.success) {

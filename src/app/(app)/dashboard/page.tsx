@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -12,7 +11,6 @@ import {
 import { Badge } from '@/components/ui/badge';
 import type { Election } from '@/lib/types';
 import { ArrowRight } from 'lucide-react';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 
 const elections: Omit<Election, 'candidates'>[] = [
@@ -23,7 +21,6 @@ const elections: Omit<Election, 'candidates'>[] = [
     startDate: '2024-10-01',
     endDate: '2024-10-15',
     status: 'Ongoing',
-    imageUrl: PlaceHolderImages.find(p => p.id === 'election-banner-1')?.imageUrl || '',
   },
   {
     id: 'parliamentary-2024',
@@ -32,7 +29,6 @@ const elections: Omit<Election, 'candidates'>[] = [
     startDate: '2024-11-05',
     endDate: '2024-11-10',
     status: 'Upcoming',
-    imageUrl: PlaceHolderImages.find(p => p.id === 'election-banner-2')?.imageUrl || '',
   },
     {
     id: 'local-gov-2025',
@@ -41,7 +37,6 @@ const elections: Omit<Election, 'candidates'>[] = [
     startDate: '2025-02-20',
     endDate: '2025-02-22',
     status: 'Upcoming',
-    imageUrl: PlaceHolderImages.find(p => p.id === 'election-banner-3')?.imageUrl || '',
   },
 ];
 
@@ -60,15 +55,7 @@ export default function DashboardPage() {
         {ongoingElections.length > 0 ? (
           ongoingElections.map((election) => (
             <Card key={election.id} className="overflow-hidden">
-                <div className="relative">
-                    <Image
-                        src={election.imageUrl}
-                        alt={`Banner for ${election.title}`}
-                        width={600}
-                        height={400}
-                        className="w-full h-40 object-cover"
-                        data-ai-hint={PlaceHolderImages.find(p => p.imageUrl === election.imageUrl)?.imageHint}
-                    />
+                <div className="relative p-6">
                     <div className="absolute top-2 right-2">
                         <Badge variant={election.status === 'Ongoing' ? 'destructive' : 'secondary'}>{election.status}</Badge>
                     </div>
@@ -99,15 +86,7 @@ export default function DashboardPage() {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {elections.filter(e => e.status === 'Upcoming').map((election) => (
              <Card key={election.id} className="opacity-70 overflow-hidden">
-                <div className="relative">
-                     <Image
-                        src={election.imageUrl}
-                        alt={`Banner for ${election.title}`}
-                        width={600}
-                        height={400}
-                        className="w-full h-40 object-cover"
-                        data-ai-hint={PlaceHolderImages.find(p => p.imageUrl === election.imageUrl)?.imageHint}
-                    />
+                <div className="relative p-6">
                      <div className="absolute top-2 right-2">
                         <Badge variant="secondary">{election.status}</Badge>
                     </div>

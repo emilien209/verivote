@@ -1,6 +1,5 @@
 'use client';
 import { useState, useTransition, useEffect } from 'react';
-import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { getCandidateSummary } from './actions';
@@ -70,13 +69,7 @@ export function CandidateSummary({ candidates }: { candidates: Candidate[] }) {
         {candidates.map(candidate => (
           <Card key={candidate.id} className="flex flex-col">
             <CardHeader className="items-center">
-              <Image
-                src={candidate.imageUrl}
-                alt={`Portrait of ${candidate.name}`}
-                width={100}
-                height={100}
-                className="rounded-full border-4 border-muted"
-              />
+              {/* Image removed */}
             </CardHeader>
             <CardContent className="text-center flex-grow">
               <CardTitle>{candidate.name}</CardTitle>

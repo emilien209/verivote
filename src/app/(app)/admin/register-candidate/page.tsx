@@ -28,14 +28,12 @@ export default function RegisterCandidatePage() {
     const name = formData.get('name') as string;
     const party = formData.get('party') as string;
     const platform = formData.get('platform') as string;
-    const imageUrl = formData.get('imageUrl') as string;
     
     startTransition(async () => {
       const result = await addCandidate({ 
         name, 
         party, 
         platform, 
-        imageUrl, 
       });
 
       if (result.success) {
@@ -77,10 +75,6 @@ export default function RegisterCandidatePage() {
               <div className="grid gap-2">
                   <Label htmlFor="platform">Platform Summary</Label>
                   <Textarea id="platform" name="platform" placeholder="Summarize the candidate's main platform points." required disabled={isPending} />
-              </div>
-              <div className="grid gap-2">
-                  <Label htmlFor="imageUrl">Image URL</Label>
-                  <Input id="imageUrl" name="imageUrl" placeholder="https://example.com/photo.jpg" required type="url" disabled={isPending} />
               </div>
             <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={isPending}>
                 {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

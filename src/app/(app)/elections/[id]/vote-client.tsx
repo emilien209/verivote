@@ -1,10 +1,8 @@
 
 'use client';
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
@@ -36,7 +34,7 @@ export function VoteClient({ candidates, onVoteCasted, voterName: initialVoterNa
     if (votedStatus === 'true' && !onVoteCasted) { // Only block if it's a direct voter, not an official
         setHasVoted(true);
     }
-  }, [toast, initialVoterName, onVoteCasted]);
+  }, [initialVoterName, onVoteCasted]);
 
   const handleVote = () => {
     if (!selectedCandidate) {
@@ -89,15 +87,7 @@ export function VoteClient({ candidates, onVoteCasted, voterName: initialVoterNa
             className={`relative rounded-lg border-2 bg-card p-4 transition-all hover:border-primary/80 has-[:checked]:border-primary has-[:checked]:ring-2 has-[:checked]:ring-primary/50 cursor-pointer`}
           >
             <RadioGroupItem value={candidate.id} id={candidate.id} className="sr-only" />
-            <div className="mb-4 flex flex-col items-center">
-              <Image
-                src={candidate.imageUrl}
-                alt={candidate.name}
-                width={128}
-                height={128}
-                className="rounded-full"
-              />
-            </div>
+            
             <div className="text-center">
               <h3 className="text-lg font-bold">{candidate.name}</h3>
               <p className="text-sm text-muted-foreground">{candidate.party}</p>
