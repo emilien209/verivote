@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useState, useActionState } from 'react';
+import { useState } from 'react';
+import { useActionState } from 'react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Loader2, Camera, Phone } from 'lucide-react';
 import Link from 'next/link';
@@ -96,7 +97,7 @@ function PhoneRegistrationForm() {
   const [state, formAction] = useActionState(handlePhoneRegistration, { success: false, step: 'initial' });
   const [verificationState, verificationAction] = useActionState(handlePhoneVerification, state);
 
-  if (verificationState.success) {
+  if (verificationState.success && verificationState.step === 'complete') {
     return (
        <Alert>
             <AlertTitle>Registration Complete!</AlertTitle>
@@ -182,16 +183,16 @@ export default function RegisterPage() {
               <RadioGroupItem value="photo" id="r1" className="peer sr-only" />
               <Label htmlFor="r1" className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
                 <Camera className="mb-3 h-6 w-6" />
-                Eligible Voter (with ID)
-                <span className="text-xs text-muted-foreground mt-1 text-center">Register by uploading photos of your ID and proof of voting location.</span>
+                Register with ID Photos
+                <span className="text-xs text-muted-foreground mt-1 text-center">For voters in designated areas. Requires uploading a government ID and proof of location.</span>
               </Label>
             </div>
             <div>
               <RadioGroupItem value="phone" id="r2" className="peer sr-only" />
               <Label htmlFor="r2" className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
                 <Phone className="mb-3 h-6 w-6" />
-                General User
-                <span className="text-xs text-muted-foreground mt-1 text-center">Register using your email and phone number with SMS verification.</span>
+                Register with Phone Verification
+                <span className="text-xs text-muted-foreground mt-1 text-center">For all other users. Requires a valid email and phone number for SMS verification.</span>
               </Label>
             </div>
           </RadioGroup>
