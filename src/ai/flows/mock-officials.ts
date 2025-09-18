@@ -1,4 +1,3 @@
-
 export type MockOfficial = {
     id: string;
     name: string;
@@ -6,13 +5,5 @@ export type MockOfficial = {
     password?: string;
 };
 
-// In a real app, this data would be in a database.
-// This is the initial seed data for the JSON file store.
-export const MOCK_OFFICIALS: MockOfficial[] = [
-    {
-        "id": "off1721833158932",
-        "name": "Emilien",
-        "email": "ndishimyeemilien@gmail.com",
-        "password": "password"
-    }
-];
+// This mock data is no longer used. Officials are now managed in Firestore.
+export const MOCK_OFFICIALS: MockOfficial[] = [];

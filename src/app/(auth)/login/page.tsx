@@ -37,7 +37,6 @@ export default function LoginPage() {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        // Fetch user role from Firestore
         const userDocRef = doc(db, 'users', user.uid);
         const userDoc = await getDoc(userDocRef);
 
@@ -65,7 +64,6 @@ export default function LoginPage() {
              setError(t('login.error.invalid'));
           }
         } else {
-          // This case should ideally not happen if registration is handled correctly
           setError(t('login.error.no_role'));
         }
       } catch (err: any) {
@@ -89,7 +87,7 @@ export default function LoginPage() {
       
       <div className="grid gap-4 w-full">
         {error && (
-            <Alert variant="destructive" className="mb-4">
+            <Alert variant="destructive" className="my-4">
             <AlertTitle>{t('login.error.title')}</AlertTitle>
             <AlertDescription>{error}</AlertDescription>
             </Alert>
@@ -120,17 +118,15 @@ export default function LoginPage() {
             <p className="text-xs text-muted-foreground">
                 {t('login.admin_official_info')}
             </p>
+             <Link href="/admin-login" className="text-sm underline">
+                Admin & Official Login
+            </Link>
         </div>
       </div>
       <div className="mt-4 text-center text-sm">
         {t('login.no_account')}{' '}
         <Link href="/register" className="underline">
           {t('login.register_button')}
-        </Link>
-      </div>
-      <div className="mt-2 text-center text-xs">
-        <Link href="/register/admin" className="underline text-muted-foreground">
-          Admin Registration
         </Link>
       </div>
     </>

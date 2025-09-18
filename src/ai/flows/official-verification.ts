@@ -1,121 +1,93 @@
 'use server';
 
 /**
- * @fileOverview Manages and verifies election officials.
+ * @fileOverview Manages and verifies election officials in Firestore.
  *
- * - verifyOfficial: Authenticates an official's credentials.
- * - getOfficials: Returns a list of all officials.
- * - addOfficial: Adds a new official.
- * - removeOfficial: Removes an official.
+ * - verifyOfficial: Authenticates an official's credentials (DEPRECATED - handled by Firebase Auth).
+ * - getOfficials: Returns a list of all officials from Firestore.
+ * - addOfficial: Adds a new official to Firestore and creates a Firebase Auth user.
+ * - removeOfficial: Removes an official from Firestore.
  */
 
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
-import { MOCK_OFFICIALS as initialMockOfficials, type MockOfficial } from './mock-officials';
-import fs from 'fs';
-import path from 'path';
-
-// Use a simple JSON file as a database for this mock data.
-const dbPath = path.resolve(process.cwd(), 'src/ai/flows/mock-officials.json');
-
-function readOfficials(): MockOfficial[] {
-  try {
-    if (!fs.existsSync(dbPath)) {
-      // If the file doesn't exist, start with the initial data and create the file.
-      fs.writeFileSync(dbPath, JSON.stringify(initialMockOfficials, null, 2));
-      return initialMockOfficials;
-    }
-    const data = fs.readFileSync(dbPath, 'utf-8');
-    // If the file is empty, initialize it with seed data.
-    if (!data.trim()) {
-        fs.writeFileSync(dbPath, JSON.stringify(initialMockOfficials, null, 2));
-        return initialMockOfficials;
-    }
-    return JSON.parse(data);
-  } catch (error) {
-    console.error("Error reading or creating officials file:", error);
-    // Fallback to initial data if there's an error
-    return initialMockOfficials;
-  }
-}
-
-function writeOfficials(officials: MockOfficial[]): void {
-  try {
-    fs.writeFileSync(dbPath, JSON.stringify(officials, null, 2));
-  } catch (error) {
-    console.error("Error writing officials file:", error);
-  }
-}
-
-
-// --- Verification Flow ---
-
-const VerifyOfficialInputSchema = z.object({
-  email: z.string().email().describe("The official's email."),
-  password: z.string().describe("The official's password."),
-});
-export type VerifyOfficialInput = z.infer<typeof VerifyOfficialInputSchema>;
-
-const VerifyOfficialOutputSchema = z.object({
-  isAuthenticated: z.boolean().describe('Whether or not the official is authenticated.'),
-});
-export type VerifyOfficialOutput = z.infer<typeof VerifyOfficialOutputSchema>;
-
-export async function verifyOfficial(input: VerifyOfficialInput): Promise<VerifyOfficialOutput> {
-  return verifyOfficialFlow(input);
-}
-
-const verifyOfficialFlow = ai.defineFlow(
-  {
-    name: 'verifyOfficialFlow',
-    inputSchema: VerifyOfficialInputSchema,
-    outputSchema: VerifyOfficialOutputSchema,
-  },
-  async (input) => {
-    const officials = readOfficials();
-    const official = officials.find(o => o.email === input.email && o.password === input.password);
-
-    if (official) {
-      return {
-        isAuthenticated: true,
-      };
-    }
-
-    return {
-      isAuthenticated: false,
-    };
-  }
-);
+import { z } from 'genkit';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { collection, getDocs, doc, setDoc, deleteDoc, query, where } from 'firebase/firestore';
+import { auth, db } from '@/lib/firebase';
+import type { Official } from '@/lib/types';
 
 
 // --- Management Functions ---
 
-export async function getOfficials(): Promise<Omit<MockOfficial, 'password'>[]> {
-  const officials = readOfficials();
-  // Return a copy of the officials array, omitting the password.
-  return officials.map(({ password, ...rest }) => rest);
+export async function getOfficials(): Promise<Official[]> {
+  try {
+    const usersCollection = collection(db, 'users');
+    const q = query(usersCollection, where('role', '==', 'official'));
+    const querySnapshot = await getDocs(q);
+    const officials: Official[] = [];
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      officials.push({
+        id: doc.id,
+        name: data.fullName,
+        email: data.email,
+      });
+    });
+    return officials;
+  } catch (error) {
+    console.error("Error fetching officials:", error);
+    return [];
+  }
 }
 
-export async function addOfficial(official: MockOfficial): Promise<{ success: boolean; error?: string }> {
-  const officials = readOfficials();
-  if (officials.some(o => o.email.toLowerCase() === official.email.toLowerCase())) {
-    return { success: false, error: 'An official with this email already exists.' };
+export async function addOfficial(official: Omit<Official, 'id'> & { password?: string }): Promise<{ success: boolean; error?: string }> {
+  if (!official.password) {
+    return { success: false, error: 'Password is required to create an official.' };
   }
-  const newId = `off${Date.now()}`;
-  officials.push({ ...official, id: newId });
-  writeOfficials(officials);
-  return { success: true };
+
+  try {
+     // Check if user with this email already exists
+    const q = query(collection(db, "users"), where("email", "==", official.email.toLowerCase()));
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+      return { success: false, error: 'An official with this email already exists.' };
+    }
+
+    // Step 1: Create Firebase Auth user
+    const userCredential = await createUserWithEmailAndPassword(auth, official.email, official.password);
+    const user = userCredential.user;
+
+    // Step 2: Create Firestore document
+    const officialDoc = {
+      id: user.uid,
+      fullName: official.name,
+      email: official.email,
+      role: 'official',
+      status: 'approved',
+    };
+
+    await setDoc(doc(db, 'users', user.uid), officialDoc);
+
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error adding official:", error);
+    if (error.code === 'auth/email-already-in-use') {
+        return { success: false, error: 'An official with this email already exists.' };
+    }
+     if (error.code === 'auth/weak-password') {
+        return { success: false, error: 'Password is too weak. It must be at least 6 characters long.' };
+    }
+    return { success: false, error: 'An unexpected error occurred while adding the official.' };
+  }
 }
 
 export async function removeOfficial(officialId: string): Promise<{ success: boolean; error?: string }> {
-  let officials = readOfficials();
-  const initialLength = officials.length;
-  officials = officials.filter(o => o.id !== officialId);
-  
-  if (officials.length === initialLength) {
-    return { success: false, error: 'Official not found.' };
+  try {
+    // In a real app, you would use the Firebase Admin SDK to delete the auth user.
+    // For this prototype, we are only deleting the Firestore record.
+    await deleteDoc(doc(db, 'users', officialId));
+    return { success: true };
+  } catch (error) {
+    console.error("Error removing official:", error);
+    return { success: false, error: 'Failed to remove official from the database.' };
   }
-  
-  writeOfficials(officials);
-  return { success: true };
 }

@@ -2,11 +2,10 @@
 
 import { addOfficial, removeOfficial as removeOfficialFromDb } from '@/ai/flows/official-verification';
 import { revalidatePath } from 'next/cache';
-import type { MockOfficial } from '@/ai/flows/mock-officials';
 
-export async function handleAddOfficial(official: Omit<MockOfficial, 'id'>) {
+export async function handleAddOfficial(official: { name: string, email: string, password?: string }) {
   try {
-    const result = await addOfficial(official as MockOfficial); // Pass the full official object
+    const result = await addOfficial(official);
     if (result.success) {
       revalidatePath('/admin/manage-officials');
       return { success: true };

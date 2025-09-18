@@ -1,5 +1,4 @@
 import { LanguageProvider } from '@/contexts/language-context';
-import Image from 'next/image';
 
 export default function AuthLayout({
   children,
@@ -21,7 +20,7 @@ export default function AuthLayout({
           className="hidden bg-muted lg:block bg-cover bg-center"
           style={{ backgroundImage: "url('https://i.pinimg.com/736x/0e/61/6b/0e616b0cecf762bf5d1481f09f5fa808.jpg')" }}
         >
-          {/* This div is now the background, no image needed */}
+          {/* This div is now the background */}
         </div>
       </div>
     </LanguageProvider>

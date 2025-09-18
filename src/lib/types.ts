@@ -32,7 +32,6 @@ export type Voter = {
   
   // Optional fields based on registration type
   nationalId?: string;
-  password?: string; // Only used during registration, not stored in Firestore
   phone?: string;
   idPhotoUrl?: string;
 }
