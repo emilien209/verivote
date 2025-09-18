@@ -11,6 +11,3 @@ export default function AuthenticatedLayout({
     </AppLayout>
   );
 }
-
-// Add a new folder for officials
-// src/app/(app)/official/cast-vote/page.tsx
