@@ -107,22 +107,6 @@ export async function verifyUserByPhoto(input: VerifyUserByPhotoInput): Promise<
     return verifyUserByPhotoFlow(input);
 }
 
-const verifyUserByPhotoPrompt = ai.definePrompt({
-    name: 'verifyUserByPhotoPrompt',
-    input: { schema: VerifyUserByPhotoInputSchema },
-    output: { schema: VerifyUserByPhotoOutputSchema },
-    prompt: `You are an AI verification agent. Your task is to analyze the provided ID card photo.
-    
-    ID Photo: {{media url=idPhotoDataUri}}
-
-    1.  Analyze the ID photo to determine if it is a valid government-issued ID.
-    2.  Extract the National ID number and the Full Name from the ID.
-    3.  Based on your analysis, decide if the user is verified.
-    
-    For this prototype, assume the photo is always valid and extract mock data.`
-});
-
-
 const verifyUserByPhotoFlow = ai.defineFlow(
     {
         name: 'verifyUserByPhotoFlow',
