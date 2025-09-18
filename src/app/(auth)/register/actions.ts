@@ -56,6 +56,8 @@ export async function handleVoterPhotoRegistration(
         let errorMessage = 'An unexpected error occurred during photo registration.';
         if (error.code === 'auth/email-already-in-use') {
             errorMessage = 'This email address is already registered.';
+        } else if (error.code === 'auth/weak-password') {
+            errorMessage = 'The password is too weak. It must be at least 6 characters long.';
         }
         console.error("Voter photo registration error:", error);
         return { success: false, error: errorMessage };
@@ -108,6 +110,8 @@ export async function handlePhoneRegistration(
         let errorMessage = 'An unexpected error occurred during phone registration.';
         if (error.code === 'auth/email-already-in-use') {
             errorMessage = 'This email address is already registered.';
+        } else if (error.code === 'auth/weak-password') {
+            errorMessage = 'The password is too weak. It must be at least 6 characters long.';
         }
         console.error("Voter phone registration error:", error);
         return { success: false, error: errorMessage };
