@@ -129,6 +129,11 @@ export default function LoginPage() {
           {t('login.register_button')}
         </Link>
       </div>
+      <div className="mt-2 text-center text-xs">
+        <Link href="/register/admin" className="underline text-muted-foreground">
+          Admin Registration
+        </Link>
+      </div>
     </>
   );
 }
