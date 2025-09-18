@@ -136,15 +136,12 @@ const verifyUserByPhotoFlow = ai.defineFlow(
         // In a real application, you would use a multimodal model to analyze the images.
         // For this prototype, we'll just simulate a successful verification.
         console.log("Simulating AI analysis of ID and location photos.");
-
-        // const { output } = await verifyUserByPhotoPrompt(input);
-        // return output!;
-
+        
         // For now, let's return mock data.
         return {
             isVerified: true,
             extractedNationalId: '1199080123456789', // Mock extracted ID
             extractedName: 'Jane Doe (from Photo)', // Mock extracted name
-        }
+        };
     }
 );
