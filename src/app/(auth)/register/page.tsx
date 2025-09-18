@@ -5,14 +5,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useState } from 'react';
+import { useState, useActionState } from 'react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Loader2, Camera, Phone } from 'lucide-react';
 import Link from 'next/link';
 import { useTranslation } from '@/hooks/use-translation';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { handleVoterPhotoRegistration, handlePhoneRegistration, handlePhoneVerification } from './actions';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useFormStatus } from 'react-dom';
 
 type RegistrationType = 'photo' | 'phone';
 
@@ -27,7 +27,7 @@ function SubmitButton({ children, formAction }: { children: React.ReactNode, for
 }
 
 function PhotoRegistrationForm() {
-  const [state, formAction] = useFormState(handleVoterPhotoRegistration, { success: false });
+  const [state, formAction] = useActionState(handleVoterPhotoRegistration, { success: false });
   const [idPhotoPreview, setIdPhotoPreview] = useState<string | null>(null);
   const [locationPhotoPreview, setLocationPhotoPreview] = useState<string | null>(null);
   const router = useRouter();
@@ -93,8 +93,8 @@ function PhotoRegistrationForm() {
 }
 
 function PhoneRegistrationForm() {
-  const [state, formAction] = useFormState(handlePhoneRegistration, { success: false, step: 'initial' });
-  const [verificationState, verificationAction] = useFormState(handlePhoneVerification, state);
+  const [state, formAction] = useActionState(handlePhoneRegistration, { success: false, step: 'initial' });
+  const [verificationState, verificationAction] = useActionState(handlePhoneVerification, state);
 
   if (verificationState.success) {
     return (
