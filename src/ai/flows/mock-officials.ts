@@ -8,4 +8,11 @@ export type MockOfficial = {
 
 // In a real app, this data would be in a database.
 // This is the initial seed data for the JSON file store.
-export const MOCK_OFFICIALS: MockOfficial[] = [];
+export const MOCK_OFFICIALS: MockOfficial[] = [
+    {
+        "id": "off1721833158932",
+        "name": "Emilien",
+        "email": "ndishimyeemilien@gmail.com",
+        "password": "password"
+    }
+];

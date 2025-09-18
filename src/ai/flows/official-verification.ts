@@ -20,13 +20,18 @@ const dbPath = path.resolve(process.cwd(), 'src/ai/flows/mock-officials.json');
 
 function readOfficials(): MockOfficial[] {
   try {
-    if (fs.existsSync(dbPath)) {
-      const data = fs.readFileSync(dbPath, 'utf-8');
-      return JSON.parse(data);
+    if (!fs.existsSync(dbPath)) {
+      // If the file doesn't exist, start with the initial data and create the file.
+      fs.writeFileSync(dbPath, JSON.stringify(initialMockOfficials, null, 2));
+      return initialMockOfficials;
     }
-    // If the file doesn't exist, start with the initial data and create the file.
-    fs.writeFileSync(dbPath, JSON.stringify(initialMockOfficials, null, 2));
-    return initialMockOfficials;
+    const data = fs.readFileSync(dbPath, 'utf-8');
+    // If the file is empty, initialize it with seed data.
+    if (!data.trim()) {
+        fs.writeFileSync(dbPath, JSON.stringify(initialMockOfficials, null, 2));
+        return initialMockOfficials;
+    }
+    return JSON.parse(data);
   } catch (error) {
     console.error("Error reading or creating officials file:", error);
     // Fallback to initial data if there's an error
