@@ -40,36 +40,36 @@
   }
 
   .dark {
-    --background: 222 47% 11%;
+    --background: 216 38% 12%; /* Deep Blue */
     --foreground: 210 20% 98%;
-    --card: 222 47% 14%;
+    --card: 216 38% 16%;
     --card-foreground: 210 20% 98%;
-    --popover: 222 47% 11%;
+    --popover: 216 38% 12%;
     --popover-foreground: 210 20% 98%;
-    --primary: 209 72% 51%; /* Brighter Blue for dark mode */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 118 50% 50%; /* Brighter Green for dark mode */
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 62.8% 30.6%;
+    --primary: 195 100% 50%; /* Vibrant Cyan/Blue */
+    --primary-foreground: 216 38% 12%; /* Deep Blue for text on primary */
+    --secondary: 216 38% 25%;
+    --secondary-foreground: 210 20% 98%;
+    --muted: 216 38% 25%;
+    --muted-foreground: 210 20% 70%;
+    --accent: 338 90% 55%; /* Bright Red/Pink */
+    --accent-foreground: 210 20% 98%;
+    --destructive: 0 62.8% 50.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
-    --ring: 209 72% 51%;
-    --chart-1: 209 72% 51%;
-    --chart-2: 118 50% 50%;
-    --chart-3: 48 100% 60%; /* Brighter Yellow */
-    --sidebar-background: 222 47% 14%;
+    --border: 216 38% 25%;
+    --input: 216 38% 25%;
+    --ring: 195 100% 50%;
+    --chart-1: 195 100% 50%;
+    --chart-2: 338 90% 55%;
+    --chart-3: 260 100% 60%; /* Vibrant Purple */
+    --sidebar-background: 216 38% 14%;
     --sidebar-foreground: 210 20% 98%;
-    --sidebar-primary: 209 72% 51%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 222 47% 18%;
+    --sidebar-primary: 195 100% 50%;
+    --sidebar-primary-foreground: 216 38% 12%;
+    --sidebar-accent: 216 38% 20%;
     --sidebar-accent-foreground: 210 20% 98%;
-    --sidebar-border: 0 0% 20%;
-    --sidebar-ring: 209 72% 51%;
+    --sidebar-border: 216 38% 25%;
+    --sidebar-ring: 195 100% 50%;
   }
 }
 

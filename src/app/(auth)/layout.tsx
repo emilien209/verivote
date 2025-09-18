@@ -11,7 +11,7 @@ export default function AuthLayout({
 
   return (
     <LanguageProvider>
-      <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-1 xl:min-h-screen">
+      <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-2 xl:min-h-screen">
         <main className="flex items-center justify-center py-12">
           <div className="mx-auto grid w-[350px] gap-6">
             <div className="grid gap-2 text-center">
@@ -22,6 +22,16 @@ export default function AuthLayout({
             </div>
           </div>
         </main>
+        <div className="hidden bg-muted lg:block">
+          <Image
+            src="https://images.unsplash.com/photo-1554232456-8727a67f2b54?q=80&w=1974&auto=format&fit=crop"
+            alt="Abstract background"
+            width="1920"
+            height="1080"
+            className="h-full w-full object-cover dark:brightness-[0.3] dark:grayscale"
+            data-ai-hint="abstract geometric"
+          />
+        </div>
       </div>
     </LanguageProvider>
   );
