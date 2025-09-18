@@ -6,40 +6,8 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc, getDoc, getDocs, collection, updateDoc, deleteDoc } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
 
-// --- Public Actions ---
-
-// Called from the voter registration page
-export async function handleVoterRegistration(voterData: Omit<Voter, 'id' | 'status'> & { firstName: string; lastName: string }) {
-    try {
-        // Step 1: Create the user in Firebase Authentication
-        const userCredential = await createUserWithEmailAndPassword(auth, voterData.email, voterData.password!);
-        const user = userCredential.user;
-
-        // Step 2: Create the user document in Firestore with 'pending' status
-        const voterDoc: Omit<Voter, 'password'> = {
-            id: user.uid,
-            fullName: voterData.fullName,
-            nationalId: voterData.nationalId,
-            email: voterData.email,
-            status: 'pending',
-            role: 'voter' // Assign role
-        };
-
-        await setDoc(doc(db, 'users', user.uid), voterDoc);
-
-        revalidatePath('/admin/manage-voters');
-
-        return { success: true };
-    } catch (error: any) {
-        let errorMessage = 'An unexpected error occurred.';
-        if (error.code === 'auth/email-already-in-use') {
-            errorMessage = 'This email address is already registered.';
-        }
-        console.error("Voter registration error:", error);
-        return { success: false, error: errorMessage };
-    }
-}
-
+// This file is now deprecated for registration, see /register/actions.ts
+// It is still used for voter management by admins.
 
 // --- Admin Actions ---
 

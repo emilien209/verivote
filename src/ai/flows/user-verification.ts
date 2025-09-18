@@ -85,3 +85,66 @@ const verifyUserFlow = ai.defineFlow(
     };
   }
 );
+
+
+// --- Photo Verification Flow ---
+
+const VerifyUserByPhotoInputSchema = z.object({
+    idPhotoDataUri: z.string().describe("A data URI of the user's ID card photo."),
+    locationPhotoDataUri: z.string().describe("A data URI of the user's proof of voting location photo.")
+});
+export type VerifyUserByPhotoInput = z.infer<typeof VerifyUserByPhotoInputSchema>;
+
+
+const VerifyUserByPhotoOutputSchema = z.object({
+    isVerified: z.boolean().describe('Whether the user is verified based on the photos.'),
+    extractedNationalId: z.string().optional().describe('The national ID extracted from the photo.'),
+    extractedName: z.string().optional().describe('The name extracted from the photo.'),
+});
+export type VerifyUserByPhotoOutput = z.infer<typeof VerifyUserByPhotoOutputSchema>;
+
+
+export async function verifyUserByPhoto(input: VerifyUserByPhotoInput): Promise<VerifyUserByPhotoOutput> {
+    return verifyUserByPhotoFlow(input);
+}
+
+const verifyUserByPhotoPrompt = ai.definePrompt({
+    name: 'verifyUserByPhotoPrompt',
+    input: { schema: VerifyUserByPhotoInputSchema },
+    output: { schema: VerifyUserByPhotoOutputSchema },
+    prompt: `You are an AI verification agent. Your task is to analyze the provided ID card and proof of location photos.
+    
+    ID Photo: {{media url=idPhotoDataUri}}
+    Location Photo: {{media url=locationPhotoDataUri}}
+
+    1.  Analyze the ID photo to determine if it is a valid government-issued ID.
+    2.  Extract the National ID number and the Full Name from the ID.
+    3.  Analyze the location photo to ensure it's a valid place of voting.
+    4.  Based on your analysis, decide if the user is verified.
+    
+    For this prototype, assume the photos are always valid and extract mock data.`
+});
+
+
+const verifyUserByPhotoFlow = ai.defineFlow(
+    {
+        name: 'verifyUserByPhotoFlow',
+        inputSchema: VerifyUserByPhotoInputSchema,
+        outputSchema: VerifyUserByPhotoOutputSchema,
+    },
+    async (input) => {
+        // In a real application, you would use a multimodal model to analyze the images.
+        // For this prototype, we'll just simulate a successful verification.
+        console.log("Simulating AI analysis of ID and location photos.");
+
+        // const { output } = await verifyUserByPhotoPrompt(input);
+        // return output!;
+
+        // For now, let's return mock data.
+        return {
+            isVerified: true,
+            extractedNationalId: '1199080123456789', // Mock extracted ID
+            extractedName: 'Jane Doe (from Photo)', // Mock extracted name
+        }
+    }
+);
