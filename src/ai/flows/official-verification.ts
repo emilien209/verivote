@@ -93,7 +93,7 @@ export async function getOfficials(): Promise<Omit<MockOfficial, 'password'>[]> 
 
 export async function addOfficial(official: MockOfficial): Promise<{ success: boolean; error?: string }> {
   const officials = readOfficials();
-  if (officials.some(o => o.email === official.email)) {
+  if (officials.some(o => o.email.toLowerCase() === official.email.toLowerCase())) {
     return { success: false, error: 'An official with this email already exists.' };
   }
   const newId = `off${Date.now()}`;
