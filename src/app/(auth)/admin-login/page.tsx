@@ -16,6 +16,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import Link from 'next/link';
+import { Separator } from '@/components/ui/separator';
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -38,15 +39,20 @@ export default function AdminLoginPage() {
         const userDocRef = doc(db, 'users', user.uid);
         const userDoc = await getDoc(userDocRef);
 
-        if (userDoc.exists() && userDoc.data().role === 'admin') {
-          localStorage.setItem('userRole', 'admin');
-          router.push('/admin');
+        if (userDoc.exists() && (userDoc.data().role === 'admin' || userDoc.data().role === 'official')) {
+          const role = userDoc.data().role;
+          localStorage.setItem('userRole', role);
+          if (role === 'admin') {
+            router.push('/admin');
+          } else {
+             router.push('/official/cast-vote');
+          }
         } else {
-          setError('Access denied. You are not an authorized administrator.');
+          setError('Access denied. You are not an authorized administrator or official.');
         }
       } catch (err: any) {
         if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
-          setError('Invalid admin credentials. Please try again.');
+          setError('Invalid credentials. Please try again.');
         } else {
           setError('An unexpected error occurred. Please try again later.');
         }
@@ -57,9 +63,9 @@ export default function AdminLoginPage() {
   return (
     <div className="w-full">
         <CardHeader className="text-left p-0">
-            <CardTitle className="text-3xl font-bold">Admin Sign In</CardTitle>
+            <CardTitle className="text-3xl font-bold">Admin & Official Sign In</CardTitle>
             <CardDescription>
-            Enter your administrative credentials to access the dashboard.
+            Enter your assigned credentials to access your dashboard.
             </CardDescription>
         </CardHeader>
   
@@ -91,9 +97,16 @@ export default function AdminLoginPage() {
                 Sign In
             </Button>
             </form>
+             <Separator className="my-2" />
+             <div className="text-center text-sm">
+                Need to create the first admin account?{' '}
+                <Link href="/register/admin" className="underline">
+                Register as Admin
+                </Link>
+             </div>
         </div>
         <div className="mt-4 text-center text-sm">
-            Not an admin?{' '}
+            Not an admin or official?{' '}
             <Link href="/login" className="underline">
             Go to Voter Login
             </Link>
