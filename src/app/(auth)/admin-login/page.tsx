@@ -48,6 +48,8 @@ export default function AdminLoginPage() {
              router.push('/official/cast-vote');
           }
         } else {
+          // If the user exists in Auth but not in our 'users' collection with the right role
+          await auth.signOut(); // Log them out
           setError('Access denied. You are not an authorized administrator or official.');
         }
       } catch (err: any) {

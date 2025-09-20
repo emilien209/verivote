@@ -46,6 +46,7 @@ export default function LoginPage() {
           const status = userData.status;
           
           localStorage.setItem('userRole', role);
+          localStorage.setItem('voterName', userData.fullName || '');
 
           if (role === 'admin') {
             router.push('/admin');
@@ -53,18 +54,21 @@ export default function LoginPage() {
             router.push('/official/cast-vote');
           } else if (role === 'voter') {
              if (status === 'approved') {
-                localStorage.setItem('voterName', userData.fullName || '');
                 router.push('/dashboard');
              } else if (status === 'pending') {
                 setError(t('login.error.pending'));
+                await auth.signOut();
              } else {
                 setError(t('login.error.rejected'));
+                await auth.signOut();
              }
           } else {
              setError(t('login.error.invalid'));
+             await auth.signOut();
           }
         } else {
           setError(t('login.error.no_role'));
+          await auth.signOut();
         }
       } catch (err: any) {
         if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {

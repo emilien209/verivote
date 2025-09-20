@@ -67,15 +67,20 @@ export function VoteClient({ candidates, onVoteCasted, voterId: assistedVoterId,
     if (result.success) {
         if (onVoteCasted) {
             onVoteCasted();
+             toast({
+                title: 'Vote Cast Successfully!',
+                description: `Vote for ${voterName} has been securely recorded.`,
+                action: <CheckCircle className="text-green-500" />,
+            });
         } else {
             localStorage.setItem(`hasVoted_${electionId}_${voterId}`, 'true');
             setHasVoted(true);
+             toast({
+                title: 'Vote Cast Successfully!',
+                description: 'Your vote has been securely recorded. Thank you for participating.',
+                action: <CheckCircle className="text-green-500" />,
+            });
         }
-        toast({
-            title: 'Vote Cast Successfully!',
-            description: 'Your vote has been securely recorded. Thank you for participating.',
-            action: <CheckCircle className="text-green-500" />,
-        });
     } else {
         toast({
             title: 'Vote Failed',

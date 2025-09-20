@@ -13,7 +13,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Loader2, UserCheck, UserX } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { verifyUser } from '@/ai/flows/user-verification';
 import { VoteClient } from '@/app/(app)/elections/[id]/vote-client';
 import type { Candidate } from '@/lib/types';
 import { getUserById } from './actions';
@@ -38,16 +37,17 @@ export function CastVoteClient({ candidates }: { candidates: Candidate[] }) {
     setVoter(null);
     setVoterState(VoterState.LOOKUP);
     startTransition(async () => {
-      const hasVoted = localStorage.getItem(`hasVoted_${electionId}_${nationalIdInput}`);
-      if (hasVoted) {
-          setError('This voter has already cast their ballot locally. Check central records if needed.');
-          setVoterState(VoterState.IDLE);
-          return;
-      }
-      
       const result = await getUserById({ nationalId: nationalIdInput });
 
       if (result.success && result.user) {
+        // Double-check local storage just in case this browser was used for this voter
+        const hasVotedLocally = localStorage.getItem(`hasVoted_${electionId}_${result.user.id}`);
+        if (hasVotedLocally) {
+            setError('This voter has already cast their ballot from this station.');
+            setVoterState(VoterState.IDLE);
+            return;
+        }
+
         setVoter({ id: result.user.id, name: result.user.fullName, nationalId: nationalIdInput });
         setVoterState(VoterState.READY_TO_VOTE);
       } else {
@@ -59,7 +59,7 @@ export function CastVoteClient({ candidates }: { candidates: Candidate[] }) {
   
   const handleVoteCasted = () => {
     if(voter) {
-        // Record that this National ID has voted
+        // Record that this voter has voted at this station to prevent re-verification in the same session
         localStorage.setItem(`hasVoted_${electionId}_${voter.id}`, 'true');
     }
     // Reset the page to be ready for the next voter
@@ -126,7 +126,7 @@ export function CastVoteClient({ candidates }: { candidates: Candidate[] }) {
                 <CardContent>
                     {error && (
                     <Alert variant="destructive" className="mb-4">
-                        <AlertTitle>Notice</AlertTitle>
+                        <AlertTitle>Verification Error</AlertTitle>
                         <AlertDescription>{error}</AlertDescription>
                     </Alert>
                     )}
