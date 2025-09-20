@@ -27,39 +27,50 @@
   "register": {
     "title": "Kwiyandikisha kw'Abatora",
     "description": "Shyiramo amakuru yawe kugirango ufungure konti.",
+    "description_choice": "Hitamo uburyo bwo kwiyandikisha.",
+    "method_photo_label": "Iyandikishe n'ifoto y'indangamuntu",
+    "method_photo_desc": "Ku batora bari mu turere twatoranyijwe. Bisaba kohereza indangamuntu ya leta.",
+    "method_phone_label": "Iyandikishe n'verifikasiyo ya telefone",
+    "method_phone_desc": "Ku bandi bakoresha bose. Bisaba imeyili na nimero ya telefone bikora kugira ngo haboneke ubutumwa bugufi bwo kwemeza.",
+    "back_to_selection": "Subira ku mahitamo yo kwiyandikisha",
     "form": {
-      "firstName": {
-        "label": "Izina ry'umuryango",
-        "placeholder": "Mutangana"
-      },
-      "lastName": {
-        "label": "Izina bwite",
-        "placeholder": "Jean"
-      },
-      "nationalId": {
-        "label": "Numero y'Indangamuntu",
-        "placeholder": "1234567890123456"
-      },
       "email": {
-        "label": "Imeyili",
-        "placeholder": "izina@urugero.com"
+        "label": "Aderesi ya imeyili"
       },
       "password": {
-        "label": "Ijambobanga"
+        "label": "Shyiramo ijambobanga"
       },
-      "confirmPassword": {
-        "label": "Emeza Ijambobanga"
+      "id_card": {
+        "label": "Ohereza indangamuntu"
       },
-      "submit": "Iyandikishe"
+      "phone": {
+        "label": "Nimero ya telefone"
+      },
+      "verification_code": {
+        "label": "Kode yo kwemeza"
+      },
+      "submit_photo": "Iyandikishe n'amafoto",
+      "submit_phone": "Iyandikishe na Telefone",
+      "submit_code": "Emeza kode"
+    },
+    "success_photo": {
+      "title": "Kwiyandikisha Byagenze Neza!",
+      "description": "Wiyandikishije kandi wemejwe neza!",
+      "button": "Komeza winjire"
+    },
+    "success_phone": {
+        "title": "Kwiyandikisha Birangiye!",
+        "description": "Telefone yawe yemejwe kandi konti yawe irakora!",
+        "button": "Komeza winjire"
     },
     "error": {
-      "title": "Kwiyandikisha Byanze",
-      "password_mismatch": "Amagambo banga ntabwo ahuye."
+      "title_failed": "Kwiyandikisha Byanze",
+      "title_verification": "Kugenzura Byanze"
     },
-    "success": {
-      "title": "Kwiyandikisha Byoherejwe!",
-      "description": "Kwiyandikisha kwawe gutegereje kwemezwa. Uzashobora kwinjira iyo umuyobozi amaze kwemeza konti yawe.",
-      "button": "Subira kuri Kwinjira"
+    "alert": {
+        "check_phone_title": "Reba telefone yawe!",
+        "check_phone_desc_1": "Twohereje kode yo kwemeza kuri",
+        "check_phone_desc_2": "Kuri iyi prototype, kode ni:"
     },
     "have_account": "Usanzwe ufite konti?",
     "login_button": "Injira"

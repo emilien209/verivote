@@ -28,6 +28,7 @@ function SubmitButton({ children, formAction }: { children: React.ReactNode, for
 }
 
 function PhotoRegistrationForm() {
+  const { t } = useTranslation();
   const [state, formAction] = useActionState(handleVoterPhotoRegistration, { success: false });
   const [idPhotoPreview, setIdPhotoPreview] = useState<string | null>(null);
 
@@ -47,11 +48,11 @@ function PhotoRegistrationForm() {
   if (state.success) {
     return (
         <Alert>
-            <AlertTitle>Registration Successful!</AlertTitle>
+            <AlertTitle>{t('register.success_photo.title')}</AlertTitle>
             <AlertDescription>
-            {state.message}
+            {t('register.success_photo.description')}
             <Button asChild className="mt-4 w-full">
-                <Link href="/login">Proceed to Login</Link>
+                <Link href="/login">{t('register.success_photo.button')}</Link>
             </Button>
             </AlertDescription>
         </Alert>
@@ -62,41 +63,42 @@ function PhotoRegistrationForm() {
     <form action={formAction} className="grid gap-4 text-left">
       {state.error && (
         <Alert variant="destructive">
-          <AlertTitle>Registration Failed</AlertTitle>
+          <AlertTitle>{t('register.error.title_failed')}</AlertTitle>
           <AlertDescription>{state.error}</AlertDescription>
         </Alert>
       )}
       <div className="grid gap-2">
-        <Label htmlFor="email">Email Address</Label>
+        <Label htmlFor="email">{t('register.form.email.label')}</Label>
         <Input id="email" name="email" type="email" required />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="password">Create Password</Label>
+        <Label htmlFor="password">{t('register.form.password.label')}</Label>
         <Input id="password" name="password" type="password" required />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="idPhoto">Upload Identity Card</Label>
+        <Label htmlFor="idPhoto">{t('register.form.id_card.label')}</Label>
         <Input id="idPhoto" name="idPhoto" type="file" accept="image/*" required 
           onChange={(e) => handleFileChange(e, setIdPhotoPreview)} />
         {idPhotoPreview && <img src={idPhotoPreview} alt="ID Preview" className="mt-2 h-24 w-auto rounded-md border" />}
       </div>
-      <SubmitButton>Register with Photos</SubmitButton>
+      <SubmitButton>{t('register.form.submit_photo')}</SubmitButton>
     </form>
   );
 }
 
 function PhoneRegistrationForm() {
+  const { t } = useTranslation();
   const [state, formAction] = useActionState(handlePhoneRegistration, { success: false, step: 'initial' });
   const [verificationState, verificationAction] = useActionState(handlePhoneVerification, state);
 
   if (verificationState.success && verificationState.step === 'complete') {
     return (
        <Alert>
-            <AlertTitle>Registration Complete!</AlertTitle>
+            <AlertTitle>{t('register.success_phone.title')}</AlertTitle>
             <AlertDescription>
             {verificationState.message}
             <Button asChild className="mt-4 w-full">
-                <Link href="/login">Proceed to Login</Link>
+                <Link href="/login">{t('register.success_phone.button')}</Link>
             </Button>
             </AlertDescription>
         </Alert>
@@ -111,20 +113,20 @@ function PhoneRegistrationForm() {
             <input type="hidden" name="email" value={currentState.email} />
             <input type="hidden" name="expectedCode" value={currentState.mockCode} />
             <Alert>
-                <AlertTitle>Check your phone!</AlertTitle>
-                <AlertDescription>We've sent a verification code to {currentState.phone}. For this prototype, the code is: {currentState.mockCode}</AlertDescription>
+                <AlertTitle>{t('register.alert.check_phone_title')}</AlertTitle>
+                <AlertDescription>{t('register.alert.check_phone_desc_1')} {currentState.phone}. {t('register.alert.check_phone_desc_2')} {currentState.mockCode}</AlertDescription>
             </Alert>
              {currentState.error && (
                 <Alert variant="destructive">
-                    <AlertTitle>Verification Failed</AlertTitle>
+                    <AlertTitle>{t('register.error.title_verification')}</AlertTitle>
                     <AlertDescription>{currentState.error}</AlertDescription>
                 </Alert>
             )}
             <div className="grid gap-2">
-                <Label htmlFor="code">Verification Code</Label>
+                <Label htmlFor="code">{t('register.form.verification_code.label')}</Label>
                 <Input id="code" name="code" placeholder="123456" required />
             </div>
-            <SubmitButton>Confirm Code</SubmitButton>
+            <SubmitButton>{t('register.form.submit_code')}</SubmitButton>
         </form>
     );
   }
@@ -133,23 +135,23 @@ function PhoneRegistrationForm() {
     <form action={formAction} className="grid gap-4 text-left">
       {state.error && (
         <Alert variant="destructive">
-          <AlertTitle>Registration Failed</AlertTitle>
+          <AlertTitle>{t('register.error.title_failed')}</AlertTitle>
           <AlertDescription>{state.error}</AlertDescription>
         </Alert>
       )}
       <div className="grid gap-2">
-        <Label htmlFor="email">Email Address</Label>
+        <Label htmlFor="email">{t('register.form.email.label')}</Label>
         <Input id="email" name="email" type="email" required />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="phone">Phone Number</Label>
+        <Label htmlFor="phone">{t('register.form.phone.label')}</Label>
         <Input id="phone" name="phone" type="tel" required />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="password">Create Password</Label>
+        <Label htmlFor="password">{t('register.form.password.label')}</Label>
         <Input id="password" name="password" type="password" required />
       </div>
-      <SubmitButton>Register with Phone</SubmitButton>
+      <SubmitButton>{t('register.form.submit_phone')}</SubmitButton>
     </form>
   );
 }
@@ -164,7 +166,7 @@ export default function RegisterPage() {
       <CardHeader className="text-center p-0">
         <CardTitle className="text-3xl font-bold">{t('register.title')}</CardTitle>
         <CardDescription>
-          {registrationType ? "Complete the fields below to create your account." : "Choose your registration method."}
+          {registrationType ? t('register.description') : t('register.description_choice')}
         </CardDescription>
       </CardHeader>
 
@@ -175,16 +177,16 @@ export default function RegisterPage() {
               <RadioGroupItem value="photo" id="r1" className="peer sr-only" />
               <Label htmlFor="r1" className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
                 <Camera className="mb-3 h-6 w-6" />
-                Register with ID Photo
-                <span className="text-xs text-muted-foreground mt-1 text-center">For voters in designated areas. Requires uploading a government ID.</span>
+                {t('register.method_photo_label')}
+                <span className="text-xs text-muted-foreground mt-1 text-center">{t('register.method_photo_desc')}</span>
               </Label>
             </div>
             <div>
               <RadioGroupItem value="phone" id="r2" className="peer sr-only" />
               <Label htmlFor="r2" className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
                 <Phone className="mb-3 h-6 w-6" />
-                Register with Phone Verification
-                <span className="text-xs text-muted-foreground mt-1 text-center">For all other users. Requires a valid email and phone number for SMS verification.</span>
+                {t('register.method_phone_label')}
+                <span className="text-xs text-muted-foreground mt-1 text-center">{t('register.method_phone_desc')}</span>
               </Label>
             </div>
           </RadioGroup>
@@ -192,7 +194,7 @@ export default function RegisterPage() {
           <>
             {registrationType === 'photo' ? <PhotoRegistrationForm /> : <PhoneRegistrationForm />}
             <Button variant="link" size="sm" onClick={() => setRegistrationType(null)} className="mt-4 w-full">
-              Back to registration selection
+              {t('register.back_to_selection')}
             </Button>
           </>
         )}

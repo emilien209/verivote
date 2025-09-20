@@ -27,39 +27,50 @@
   "register": {
     "title": "Inscription des électeurs",
     "description": "Saisissez vos informations pour créer un compte.",
+    "description_choice": "Choisissez votre méthode d'inscription.",
+    "method_photo_label": "S'inscrire avec une photo d'identité",
+    "method_photo_desc": "Pour les électeurs des zones désignées. Nécessite le téléchargement d'une pièce d'identité gouvernementale.",
+    "method_phone_label": "S'inscrire avec vérification par téléphone",
+    "method_phone_desc": "Pour tous les autres utilisateurs. Nécessite une adresse e-mail et un numéro de téléphone valides pour la vérification par SMS.",
+    "back_to_selection": "Retour à la sélection de l'inscription",
     "form": {
-      "firstName": {
-        "label": "Prénom",
-        "placeholder": "Jean"
-      },
-      "lastName": {
-        "label": "Nom de famille",
-        "placeholder": "Dupont"
-      },
-      "nationalId": {
-        "label": "Carte d'identité nationale",
-        "placeholder": "1234567890123456"
-      },
       "email": {
-        "label": "E-mail",
-        "placeholder": "nom@example.com"
+        "label": "Adresse e-mail"
       },
       "password": {
-        "label": "Mot de passe"
+        "label": "Créer un mot de passe"
       },
-      "confirmPassword": {
-        "label": "Confirmez le mot de passe"
+      "id_card": {
+        "label": "Télécharger la carte d'identité"
       },
-      "submit": "S'inscrire"
+      "phone": {
+        "label": "Numéro de téléphone"
+      },
+      "verification_code": {
+        "label": "Code de vérification"
+      },
+      "submit_photo": "S'inscrire avec des photos",
+      "submit_phone": "S'inscrire avec un téléphone",
+      "submit_code": "Confirmer le code"
+    },
+    "success_photo": {
+      "title": "Inscription réussie !",
+      "description": "Vous avez été enregistré et approuvé avec succès !",
+      "button": "Procéder à la connexion"
+    },
+    "success_phone": {
+        "title": "Inscription terminée !",
+        "description": "Votre téléphone a été vérifié et votre compte est actif !",
+        "button": "Procéder à la connexion"
     },
     "error": {
-      "title": "Échec de l'inscription",
-      "password_mismatch": "Les mots de passe ne correspondent pas."
+      "title_failed": "L'inscription a échoué",
+      "title_verification": "La vérification a échoué"
     },
-    "success": {
-      "title": "Inscription soumise !",
-      "description": "Votre inscription est en attente d'approbation. Vous pourrez vous connecter une fois qu'un administrateur aura approuvé votre compte.",
-      "button": "Retour à la connexion"
+    "alert": {
+        "check_phone_title": "Vérifiez votre téléphone !",
+        "check_phone_desc_1": "Nous avons envoyé un code de vérification à",
+        "check_phone_desc_2": "Pour ce prototype, le code est :"
     },
     "have_account": "Vous avez déjà un compte ?",
     "login_button": "Se connecter"
