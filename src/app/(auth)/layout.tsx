@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { LanguageProvider } from '@/contexts/language-context';
+import { AuthHeader } from './auth-header';
 
 const backgroundImages = [
   'https://i.pinimg.com/736x/5f/0d/51/5f0d5165c129cde50b71166255464cf5.jpg',
@@ -27,7 +28,8 @@ export default function AuthLayout({
 
   return (
     <LanguageProvider>
-      <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-2 xl:min-h-screen">
+      <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-2 xl:min-h-screen relative">
+        <AuthHeader />
         <main className="flex items-center justify-center py-12">
           <div className="mx-auto grid w-[350px] gap-6">
             <div className="grid gap-2 text-center">
