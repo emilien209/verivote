@@ -7,8 +7,14 @@ import {
 } from '@/components/ui/card';
 import { Vote, Users, Percent } from 'lucide-react';
 import { AdminCharts } from './charts';
+import { getDashboardStats } from './actions';
 
-export default function AdminPage() {
+export const revalidate = 10; // Revalidate every 10 seconds
+
+export default async function AdminPage() {
+  const stats = await getDashboardStats();
+  const turnout = stats.totalVoters > 0 ? (stats.votesCast / stats.totalVoters) * 100 : 0;
+
   return (
     <div className="flex flex-col gap-8">
       <div>
@@ -25,7 +31,7 @@ export default function AdminPage() {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">15,234,842</div>
+            <div className="text-2xl font-bold">{stats.totalVoters.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
               Total registered citizens
             </p>
@@ -37,9 +43,9 @@ export default function AdminPage() {
             <Vote className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">8,312,991</div>
-            <p className="text-xs text-muted-foreground">
-              +1,283 in the last hour
+            <div className="text-2xl font-bold">{stats.votesCast.toLocaleString()}</div>
+             <p className="text-xs text-muted-foreground">
+              Live vote count
             </p>
           </CardContent>
         </Card>
@@ -49,7 +55,7 @@ export default function AdminPage() {
             <Percent className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">54.57%</div>
+            <div className="text-2xl font-bold">{turnout.toFixed(2)}%</div>
             <p className="text-xs text-muted-foreground">
               Current participation rate
             </p>
@@ -57,23 +63,18 @@ export default function AdminPage() {
         </Card>
       </div>
 
-      <div className="grid gap-4 md:gap-8 lg:grid-cols-2">
+      <div className="grid gap-4 md:gap-8">
         <Card>
           <CardHeader>
             <CardTitle>Results by Candidate</CardTitle>
             <CardDescription>Live vote count for each candidate.</CardDescription>
           </CardHeader>
           <CardContent>
-            <AdminCharts chartType="bar" />
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Voter Turnout Over Time</CardTitle>
-            <CardDescription>Hourly voter participation since the election started.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <AdminCharts chartType="line" />
+            {stats.results.length > 0 ? (
+              <AdminCharts resultsData={stats.results} />
+            ) : (
+               <p className="text-center text-muted-foreground">No votes have been cast yet.</p>
+            )}
           </CardContent>
         </Card>
       </div>

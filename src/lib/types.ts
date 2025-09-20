@@ -35,3 +35,19 @@ export type Voter = {
   phone?: string;
   idPhotoUrl?: string;
 }
+
+export type Vote = {
+  id: string; // composite key voterId_electionId
+  voterId: string;
+  electionId: string;
+  candidateId: string;
+  candidateName: string;
+  votedAt: Date;
+}
+
+export type VoteCount = {
+  candidateId: string;
+  candidateName: string;
+  votes: number;
+  fill?: string;
+}

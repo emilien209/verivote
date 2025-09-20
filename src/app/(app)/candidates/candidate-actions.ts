@@ -1,25 +1,28 @@
 'use server';
 
-import fs from 'fs';
-import path from 'path';
+import { collection, getDocs, orderBy, query } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 import type { Candidate } from '@/lib/types';
 
 
-const dbPath = path.resolve(process.cwd(), 'src/lib/mock-candidates.json');
-
-function readCandidates(): Candidate[] {
-  try {
-    if (fs.existsSync(dbPath)) {
-      const data = fs.readFileSync(dbPath, 'utf-8');
-      return JSON.parse(data);
-    }
-    return [];
-  } catch (error) {
-    console.error("Error reading candidates file:", error);
-    return [];
-  }
-}
-
 export async function getCandidates(): Promise<Candidate[]> {
-    return readCandidates();
+    try {
+        const candidatesCollection = collection(db, 'candidates');
+        const q = query(candidatesCollection, orderBy('name', 'asc'));
+        const querySnapshot = await getDocs(q);
+        const candidates: Candidate[] = [];
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            candidates.push({
+                id: doc.id,
+                name: data.name,
+                party: data.party,
+                platform: data.platform,
+            });
+        });
+        return candidates;
+    } catch (error) {
+        console.error("Error fetching candidates:", error);
+        return [];
+    }
 }

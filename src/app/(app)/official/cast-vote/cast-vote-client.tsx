@@ -16,6 +16,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { verifyUser } from '@/ai/flows/user-verification';
 import { VoteClient } from '@/app/(app)/elections/[id]/vote-client';
 import type { Candidate } from '@/lib/types';
+import { getUserById } from './actions';
 
 enum VoterState {
   IDLE,
@@ -27,29 +28,30 @@ enum VoterState {
 export function CastVoteClient({ candidates }: { candidates: Candidate[] }) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  const [voter, setVoter] = useState<{ name: string; nationalId: string } | null>(null);
+  const [voter, setVoter] = useState<{ id: string; name: string; nationalId: string } | null>(null);
   const [nationalIdInput, setNationalIdInput] = useState('');
   const [voterState, setVoterState] = useState<VoterState>(VoterState.IDLE);
+  const electionId = 'presidential-2024';
 
   const handleVoterLookup = () => {
     setError(null);
     setVoter(null);
     setVoterState(VoterState.LOOKUP);
     startTransition(async () => {
-      const hasVoted = localStorage.getItem(`hasVoted_${nationalIdInput}`);
+      const hasVoted = localStorage.getItem(`hasVoted_${electionId}_${nationalIdInput}`);
       if (hasVoted) {
-          setError('This voter has already cast their ballot for this election.');
+          setError('This voter has already cast their ballot locally. Check central records if needed.');
           setVoterState(VoterState.IDLE);
           return;
       }
       
-      const result = await verifyUser({ nationalId: nationalIdInput });
+      const result = await getUserById({ nationalId: nationalIdInput });
 
-      if (result.isRecognized && result.user) {
-        setVoter({ name: `${result.user.firstName} ${result.user.lastName}`, nationalId: nationalIdInput });
+      if (result.success && result.user) {
+        setVoter({ id: result.user.id, name: result.user.fullName, nationalId: nationalIdInput });
         setVoterState(VoterState.READY_TO_VOTE);
       } else {
-        setError('This National ID is not found in the NIDA database. The voter is not eligible to vote.');
+        setError(result.error || 'This National ID is not found in the voter database.');
         setVoterState(VoterState.NOT_FOUND);
       }
     });
@@ -58,7 +60,7 @@ export function CastVoteClient({ candidates }: { candidates: Candidate[] }) {
   const handleVoteCasted = () => {
     if(voter) {
         // Record that this National ID has voted
-        localStorage.setItem(`hasVoted_${voter.nationalId}`, 'true');
+        localStorage.setItem(`hasVoted_${electionId}_${voter.id}`, 'true');
     }
     // Reset the page to be ready for the next voter
     setVoter(null);
@@ -79,7 +81,7 @@ export function CastVoteClient({ candidates }: { candidates: Candidate[] }) {
                         </p>
                     </div>
                      {candidates.length > 0 ? (
-                        <VoteClient candidates={candidates} onVoteCasted={handleVoteCasted} voterName={voter?.name || ''} />
+                        <VoteClient candidates={candidates} onVoteCasted={handleVoteCasted} voterId={voter?.id} voterName={voter?.name || ''} />
                     ) : (
                         <Card className="mx-auto w-full max-w-md text-center">
                             <CardHeader>

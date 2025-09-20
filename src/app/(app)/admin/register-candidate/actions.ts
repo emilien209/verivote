@@ -1,52 +1,37 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import fs from 'fs';
-import path from 'path';
+import { collection, addDoc, deleteDoc, doc, getDocs, query, where } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 import type { Candidate } from '@/lib/types';
 
-const dbPath = path.resolve(process.cwd(), 'src/lib/mock-candidates.json');
-
-function readCandidates(): Candidate[] {
-  try {
-    if (fs.existsSync(dbPath)) {
-      const data = fs.readFileSync(dbPath, 'utf-8');
-      return JSON.parse(data);
-    }
-    return [];
-  } catch (error) {
-    console.error("Error reading candidates file:", error);
-    return [];
-  }
-}
-
-function writeCandidates(candidates: Candidate[]): void {
-  try {
-    fs.writeFileSync(dbPath, JSON.stringify(candidates, null, 2));
-  } catch (error)
-    {
-    console.error("Error writing candidates file:", error);
-  }
-}
 
 async function addCandidateToDb(candidate: Omit<Candidate, 'id'>) {
-  const candidates = readCandidates();
-  const newId = `c${Date.now()}`;
-  const newCandidate: Candidate = { ...candidate, id: newId };
-  candidates.push(newCandidate);
-  writeCandidates(candidates);
-  return { success: true };
+  try {
+    await addDoc(collection(db, 'candidates'), candidate);
+    return { success: true };
+  } catch (error) {
+    console.error("Error adding candidate to Firestore:", error);
+    return { success: false, error: "Failed to add candidate to the database." };
+  }
 }
 
 export async function addCandidate(candidate: { name: string, party: string, platform: string }) {
   try {
+    // Check if a candidate with the same name already exists to prevent duplicates
+    const q = query(collection(db, "candidates"), where("name", "==", candidate.name));
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+      return { success: false, error: 'A candidate with this name already exists.' };
+    }
+
     const result = await addCandidateToDb(candidate);
     if (result.success) {
       revalidatePath('/candidates');
       revalidatePath('/admin/register-candidate');
       return { success: true };
     }
-    return { success: false, error: 'Failed to save candidate.' };
+    return { success: false, error: result.error || 'Failed to save candidate.' };
   } catch (error) {
     console.error(error);
     return { success: false, error: 'An unexpected error occurred.' };
@@ -54,13 +39,13 @@ export async function addCandidate(candidate: { name: string, party: string, pla
 }
 
 async function removeCandidateFromDb(candidateId: string) {
-  const candidates = readCandidates();
-  const updatedCandidates = candidates.filter(c => c.id !== candidateId);
-  if (candidates.length === updatedCandidates.length) {
-    return { success: false, error: 'Candidate not found.' };
+   try {
+    await deleteDoc(doc(db, 'candidates', candidateId));
+    return { success: true };
+  } catch (error) {
+    console.error("Error removing candidate from Firestore:", error);
+    return { success: false, error: 'Failed to remove candidate from the database.' };
   }
-  writeCandidates(updatedCandidates);
-  return { success: true };
 }
 
 
@@ -69,6 +54,7 @@ export async function removeCandidate(candidateId: string) {
     const result = await removeCandidateFromDb(candidateId);
     if (result.success) {
       revalidatePath('/candidates');
+      revalidatePath('/admin/register-candidate'); // Revalidate this page too
       return { success: true };
     }
     return { success: false, error: result.error || 'Failed to remove candidate.' };

@@ -1,4 +1,5 @@
 import { AppLayout } from '@/components/layout/app-layout';
+import { AuthProvider } from '@/hooks/use-auth';
 
 export default function AuthenticatedLayout({
   children,
@@ -6,8 +7,10 @@ export default function AuthenticatedLayout({
   children: React.ReactNode;
 }) {
   return (
-    <AppLayout>
-        {children}
-    </AppLayout>
+    <AuthProvider>
+        <AppLayout>
+            {children}
+        </AppLayout>
+    </AuthProvider>
   );
 }
