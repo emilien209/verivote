@@ -5,10 +5,13 @@ import { cn } from '@/lib/utils';
 import { Toaster } from "@/components/ui/toaster"
 
 const backgroundImages = [
-  'https://i.pinimg.com/736x/5f/0d/51/5f0d5165c129cde50b71166255464cf5.jpg',
-  'https://i.pinimg.com/1200x/32/ce/25/32ce2569014b645285671dd76f4a5e0e.jpg',
-  'https://i.pinimg.com/1200x/40/04/14/4004143546948c7e80b2782028a5ecc4.jpg',
-  'https://i.pinimg.com/736x/a5/1e/73/a51e738739d5470cd2ca16e147ed5b43.jpg',
+  'https://i.pinimg.com/736x/67/8a/11/678a111e86c7be4313d1942f41b589bd.jpg',
+  'https://i.pinimg.com/736x/6b/09/c2/6b09c2a958beb4de2febe42f246c4c52.jpg',
+  'https://i.pinimg.com/736x/75/2b/3d/752b3de0c1242f3680a77daa1f73c1f8.jpg',
+  'https://i.pinimg.com/736x/53/df/a3/53dfa36cf9ca9e5c0739a7b38f229c28.jpg',
+  'https://i.pinimg.com/736x/61/50/a3/6150a34aa5b5526f52e4db0e1b28400a.jpg',
+  'https://i.pinimg.com/736x/27/95/ce/2795cee6efc8ca65318c530e3e36e94a.jpg',
+  'https://i.pinimg.com/736x/07/fc/34/07fc343df06f4c445f31aa467dcc6cff.jpg'
 ];
 
 export default function RootLayout({
