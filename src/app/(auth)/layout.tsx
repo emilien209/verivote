@@ -1,10 +1,29 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import { LanguageProvider } from '@/contexts/language-context';
+
+const backgroundImages = [
+  'https://i.pinimg.com/736x/5f/0d/51/5f0d5165c129cde50b71166255464cf5.jpg',
+  'https://i.pinimg.com/1200x/32/ce/25/32ce2569014b645285671dd76f4a5e0e.jpg',
+  'https://i.pinimg.com/1200x/40/04/14/4004143546948c7e80b2782028a5ecc4.jpg',
+  'https://i.pinimg.com/736x/a5/1e/73/a51e738739d5470cd2ca16e147ed5b43.jpg',
+];
 
 export default function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % backgroundImages.length);
+    }, 5000); // Change image every 5 seconds
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <LanguageProvider>
@@ -16,11 +35,17 @@ export default function AuthLayout({
             </div>
           </div>
         </main>
-        <div 
-          className="hidden bg-muted lg:block bg-cover bg-center"
-          style={{ backgroundImage: "url('https://i.pinimg.com/736x/0e/61/6b/0e616b0cecf762bf5d1481f09f5fa808.jpg')" }}
-        >
-          {/* This div is now the background */}
+        <div className="relative hidden bg-muted lg:block">
+          {backgroundImages.map((imageUrl, index) => (
+            <div
+              key={index}
+              className="absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
+              style={{
+                backgroundImage: `url('${imageUrl}')`,
+                opacity: index === currentImageIndex ? 1 : 0,
+              }}
+            />
+          ))}
         </div>
       </div>
     </LanguageProvider>
